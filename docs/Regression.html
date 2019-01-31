@@ -377,33 +377,8 @@ $(document).ready(function () {
 </div>
 <div id="calculate-the-distance" class="section level2">
 <h2>Calculate the distance</h2>
-<pre class="r"><code>library(geosphere)
-
-metro_sp &lt;- metro_df[,c(&quot;lat&quot;, &quot;long&quot;)]
-
-# Distance measure to measure the distance between a station and an accommodation
-# This is what the haversine formula looks like (it calculates the great-circle distance between two points on a sphere using their longitudes and latitudes. It was in principal aimed at determine the position of a ship. @robusto1957cosine)
-hav.dist &lt;- function(long1, lat1, long2, lat2) {
-  R &lt;- 6371
-  diff.long &lt;- (long2 - long1)
-  diff.lat &lt;- (lat2 - lat1)
-  a &lt;- sin(diff.lat/2)^2 + cos(lat1) * cos(lat2) * sin(diff.long/2)^2
-  b &lt;- 2 * asin(pmin(1, sqrt(a))) 
-  d = R * b
-  return(d)
-}
-
-
-# # we get a matrix that contains in the first row the distances between the first accomodation 
-# and all metro stations:
-
-dist_metacc &lt;- geosphere::distm(cbind(airbnb_clean$longitude, airbnb_clean$latitude),
-                                cbind(metro_sp$lon, metro_sp$lat), 
-                                fun = distHaversine)
-summary(dist_metacc[,1]) # for the first metro</code></pre>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ##    89.36  4783.91  5756.16  5674.86  7011.88 12692.54</code></pre>
-<pre class="r"><code>head(dist_metacc[,1:3]) # Distances from the first six accomodations to the first three metros</code></pre>
 <pre><code>##          [,1]     [,2]     [,3]
 ## [1,] 4079.600 2145.826 4228.463
 ## [2,] 5727.915 3982.683 6256.679
@@ -411,27 +386,9 @@ summary(dist_metacc[,1]) # for the first metro</code></pre>
 ## [4,] 6294.354 4322.552 5105.278
 ## [5,] 3314.377 1476.948 4080.976
 ## [6,] 5324.121 3534.447 5771.846</code></pre>
-<pre class="r"><code># now get the index of the smallest value in each row (margin = 1)
-# in other words: for each of the accomodations, get the index of the metro station that is closest
-minidx &lt;- apply(dist_metacc, 1, which.min)
-print(minidx[1:5])</code></pre>
 <pre><code>## [1] 13 17  9 10  4</code></pre>
-<pre class="r"><code># add result to data
-
-library(matrixStats)
-airbnb_clean$distance &lt;- rowMins(as.matrix(dist_metacc))
-
-head(airbnb_clean$distance)</code></pre>
 <pre><code>## [1]  640.8608 1167.9521 1347.5282  656.8279  261.9853  684.2862</code></pre>
-<pre class="r"><code># Lets create a proxy &quot;central&quot; in order to control for that
-# lat =55.679687, lng = 12.590659 (Coordinates of Nyhaven)
-library(AirBnBCopenhagen)
-nyhavn_lng &lt;- 12.590659
-nyhavn_lat &lt;- 55.679687
-airbnb_clean$dist_centrum &lt;- AirBnBCopenhagen::distance(airbnb_clean$longitude,
-                                       airbnb_clean$latitude,
-                                nyhavn_lng, nyhavn_lat)</code></pre>
-<p>We calculated the distance between the location of a listed rental and the city center, calculated using “Harversine formula” with latitude and longitude in line with ….</p>
+<p>We calculated the distance between the location of a listed rental and the city center, calculated using “Harversine formula” with latitude and longitude in line with @</p>
 </div>
 <div id="regression" class="section level2">
 <h2>Regression</h2>
@@ -476,16 +433,16 @@ Log Price per night in DKK
 <td style="text-align:left">
 </td>
 <td>
-Model 1
+Model Dist
 </td>
 <td>
-Model 2
+M. Prop
 </td>
 <td>
-Model 3
+M. Rules
 </td>
 <td>
-Model 4
+M.
 </td>
 </tr>
 <tr>
@@ -1184,13 +1141,12 @@ F Statistic
 <div id="final-findings-summarized" class="section level2">
 <h2>Final Findings Summarized:</h2>
 <ul>
-<li><p>Higher prices are associated with the number of bathrooms, how many people the listing can accommodate and</p></li>
-<li>Cancellation policies are fairly spread out, but the analysis showed that the expected relationship cannot be detected in the data. It seems to have no effect on the price of the listing.</li>
+<li><p>Distance to the closest metro station does not affect the price of the rental. As a result, a potential accommodation should always include a short distance to the next metro station.</p></li>
+<li><p>Higher prices are associated with the number of bathrooms, how many people the listing can accommodate and the repuation of the listings displayed in its reviews</p></li>
+<li><p>Cancellation policies are fairly spread out, but the analysis showed that the expected relationship cannot be detected in the data. It seems to have no effect on the price of the listing.</p></li>
 <li><p>Most top 5 words in description shows that more hosts talk about the surrounding area rather than the listing itself.</p></li>
+<li><p>However, the rental price is unaffected by the number of minimum nights and the possibility to book a listing instantly.</p></li>
 </ul>
-<p>the most expensive neighborhoods.</p>
-<p>Listings with prices around $200 - 300 get the most reviews, meaning that they are booked most often.</p>
-<p>Higher prices are associated with moderate and strict cancellation rules. However, the rental price is unaffected by the requirement that guests provide a profile photo or verify their telephone number.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2>References</h2>

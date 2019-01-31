@@ -36,6 +36,7 @@ where $price_i$ reflects the individual price per night, $\alpha$ the intercept,
 and the vector $U$ is composed of rental rules and lastly $P$ describe reputational characteristics of the listing. 
 
 ### Regression diagnostic
+
 The data set consists of a rough location of the listings (based on latitude and longitude). This enables us to include a measure for “distance to city center”, in this case, Nyhavn, as a proxy of how well a certain apartment is located within a city.
 
 Moreover, we checked for multicollinearity among the independent variables
@@ -139,7 +140,7 @@ colnames(metro_df) <- c("metro","lat", "long")
 
 ## Calculate the distance
 
-```{r distance, echo=T, warning=F, message=F}
+```{r distance, echo=F, warning=F, message=F}
 library(geosphere)
 
 metro_sp <- metro_df[,c("lat", "long")]
@@ -189,7 +190,7 @@ airbnb_clean$dist_centrum <- AirBnBCopenhagen::distance(airbnb_clean$longitude,
                                 nyhavn_lng, nyhavn_lat)
 ```
 We calculated the distance between the location of a listed rental and the city center, calculated using "Harversine formula" with latitude and longitude
-in line with ....
+in line with @
 
 
 
@@ -225,9 +226,7 @@ stargazer(mod1, mod2, mod3, mod4,
           style = "ajs",  
           summary = NULL,  
           out.header = FALSE,
-          column.labels = c("Model Distance", "Model Property", "Model Rules", "Model
-                            Reputation"), 
-          column.separate = c(1,1), 
+          column.labels = c("Model Dist", "M. Prop", "M. Rules", "M."), 
           covariate.labels = c("Distance Metro",  
                                "Distance Centre (Proxy)",
                                "Apartment (Dummy)",
@@ -276,21 +275,22 @@ In addition to that, in a next analysis, a researcher could investigate the infl
 ## Final Findings Summarized:
 
 
+ * Distance to the closest metro station does not affect the price of the rental. As a result, a potential accommodation should always include a short distance to the next metro station. 
 
-
- * Higher prices are associated with the number of bathrooms, how many people the listing can accommodate and 
+ * Higher prices are associated with the number of bathrooms, how many people the listing can accommodate and the repuation of the listings displayed in its reviews
 
  * Cancellation policies are fairly spread out, but the analysis showed that the expected relationship cannot be detected in the data. It seems to have no effect on the price of the listing. 
+ 
  * Most top 5 words in description shows that more hosts talk about the surrounding area rather than the listing itself.
-
-the most expensive neighborhoods.
-
-Listings with prices around $200 - 300 get the most reviews, meaning that they are booked most often.
+ 
+ * However, the rental price is unaffected by the number of minimum nights and the possibility to book a listing instantly.
 
 
-Higher prices are associated with moderate and strict
-cancellation rules. However, the rental price is unaffected by the requirement that guests provide a
-profile photo or verify their telephone number.
+
+
+
+
+
 
 
 ## References 
