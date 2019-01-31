@@ -273,12 +273,12 @@ table, td, th {
 
 ```{r regression stargazer II,results='asis', echo=F, warning=F, message=F}
 
-stargazer(mod1_rob, mod2_rob, mod3_rob, mod4_rob,mod5_rob, #regression models 
-          type = "html", # character vector (eg. "text" / "html" / "latex")
-          title = "Linear Regression Model (Robust SE)",  # header
-          style = "ajs",  # style (choice see below)
-          summary = NULL,  # logical vector: output summary statistics when given data.frame# path and output of file
-          out.header = FALSE, # logical vector: should output file contain code-header?
+stargazer(mod1_rob, mod2_rob, mod3_rob, mod4_rob,mod5_rob, 
+          type = "html", 
+          title = "Linear Regression Model (Robust SE)",  
+          style = "ajs",  
+          summary = NULL,  
+          out.header = FALSE, 
           column.labels = c("Distance", "Property", "Rules", "Reputation", "Full model"),
             column.sep.width = "5pt",
           covariate.labels = c("Distance Metro",  # Covariate Labels
@@ -295,7 +295,7 @@ stargazer(mod1_rob, mod2_rob, mod3_rob, mod4_rob,mod5_rob, #regression models
                                "Listings duration"),
           dep.var.caption = "Dep. Var", # Caption (Top) of dependent variable
           star.cutoffs = c(0.05,0.01,0.001),
-          dep.var.labels = c("Log Price per night in DKK"))
+          dep.var.labels = c("Log Price per night in DKK", ""))
 
 ```
 

@@ -170,6 +170,9 @@ metro_df <- cbind(names, lat,lng)
 colnames(metro_df) <- c("metro","lat", "long")
 ```
 
+
+
+
 Visualisations with`plotly`
 ```{r ploty, echo=T, results="hide", warning=F, message=F}
 library(plotly)
@@ -203,7 +206,7 @@ room_neigh %>%
           colors = viridis_pal(option = "D")(3)) %>% 
   layout(title = "AirBnB listings sorted after type and neighbourhood",
          xaxis = x, yaxis = y)
-  # only 17 shared room's listed in the data
+# only 17 shared room's listed in the data
 # Entire home = 6318
 # private room = 1199
 ```
@@ -214,26 +217,26 @@ Histograms and density plot of night price distributions.
 
 price_apart <- airbnb_clean %>%
   filter(price_dkk<2100 & room_type == "Entire home/apt") %>%
-  ggplot(aes(x=price_dkk)) +
-  stat_bin(breaks=seq(0,2100,50), fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggplot(aes(x = price_dkk)) +
+  stat_bin(breaks = seq(0,2100,50), fill="#69b3a2", color="#e9ecef", alpha = 0.9) +
   ggtitle("Night price distribution of Airbnb appartements") +
   theme_ipsum() +
   theme_ipsum_rc(grid_col = "gray90") +
-  theme(plot.title = element_text(size=12)) +
-  labs(x="Price in DKK (Danish krone)",
+  theme(plot.title = element_text(size = 12)) +
+  labs(x = "Price in DKK (Danish krone)",
        caption="")
 
 
 price_privat <- airbnb_clean %>%
   filter(price_dkk<2100 & room_type == "Private room") %>%
-  ggplot(aes(x=price_dkk)) +
-  stat_bin(breaks=seq(0,2100,50), fill="#74add1", color="#e9ecef", alpha=0.9) +
+  ggplot(aes(x = price_dkk)) +
+  stat_bin(breaks = seq(0,2100,50), fill = "#74add1", color = "#e9ecef", alpha = 0.9) +
   ggtitle("Night price distribution of Airbnb private rooms") +
   theme_ipsum() +
   theme_ipsum_rc(grid_col = "gray90") +
-  theme(plot.title = element_text(size=12)) +
-  labs(x="Price in DKK (Danish krone)",
-       caption="1 Euro = 7.4 DKK ")
+  theme(plot.title = element_text(size = 12)) +
+  labs(x = "Price in DKK (Danish krone)",
+       caption = "1 Euro = 7.4 DKK ")
 
 density_plot <- ggplot(airbnb_clean, aes(x = log(airbnb_clean$price_dkk), 
                                          color = rtype)) + 
@@ -261,7 +264,7 @@ airbnb_clean$distance <- AirBnBCopenhagen::distance(airbnb_clean$longitude,
                                                     metro_df$lat)
 
 
-plot_distance <- ggplot(airbnb_clean, aes(x= distance, y= log(price_dkk))) + 
+plot_distance <- ggplot(airbnb_clean, aes(x = distance, y = log(price_dkk))) + 
   geom_point() +
   geom_smooth(method = "lm") +
   labs(x = "Distance to the next Metro station (in meters)", 
@@ -291,6 +294,57 @@ plot_distance_c <- ggplot(airbnb_clean, aes(x= dist_centrum, y= log(price_dkk)))
         legend.title = element_blank())
 ```
 
+
+Descriptive Analysis with stargazer
+
+```{r stargazer desc, echo=T, results="hide", warning=F, message=F}
+library(stargazer)
+cph_data <- airbnb_clean[,c("price_dkk","index","strict_cancel",
+                            "home","cleaning_fee_dkk","superhost", 
+                            "listing_duration", "instant",
+                            "security_deposit_dkk",
+                            "accommodates","minimum_nights" ,
+                            "bathrooms", "distance", 
+                            "dist_centrum")] %>% na.omit()
+
+colnames(cph_data) <- c("Price per night (DKK)",
+                        "Review Index",
+                        "Strict Cancellation",
+                        "Full apartment/house",
+                        "Cleaning Fee (DKK)",
+                        "Superhost",
+                        "Duration of Listing (days)",
+                        "Instant Bookable",
+                        "Security Deposit (DKK)",
+                        "No. Accommodates",
+                        "Minimum Nights",
+                        "No. Bathrooms",
+                        "Distance Metro",
+                        "Distance Center")
+
+
+stargazer(as.data.frame(cph_data)[, c("Price per night (DKK)",
+                                  "Review Index",
+                                  "Strict Cancellation",
+                                  "Full apartment/house",
+                                  "Cleaning Fee (DKK)",
+                                  "Superhost",
+                                  "Duration of Listing (days)",
+                                  "Instant Bookable",
+                                  "Security Deposit (DKK)",
+                                  "No. Accommodates",
+                                  "Minimum Nights",
+                                  "No. Bathrooms",
+                                  "Distance Metro",
+                                  "Distance Center")], 
+          type = "html",
+          digits = 2,
+          summary.stat = c("mean","sd","median","min", "max"),
+          font.size = "small",
+          column.sep.width = "10pt")
+
+```
+
 Now we turn to mapping them in an interactive map using the `leaflet` package.
 
 ```{r, echo=T, results="hide", warning=F, message=F}
@@ -315,13 +369,13 @@ nyhavn <- paste(sep = "<br/>",
                        ... =   "'>Link</a>"))
 
 map_nyhavn <- m %>% 
-  addProviderTiles("Esri.WorldImagery", group="Background 1") %>%
-  addTiles(options = providerTileOptions(noWrap = TRUE), group="Background 2") %>%
+  addProviderTiles("Esri.WorldImagery", group = "Background 1") %>%
+  addTiles(options = providerTileOptions(noWrap = TRUE), group = "Background 2") %>%
   addCircles(data=metro_df, lng = ~long, lat = ~lat,popup = ~metro,
              fillColor="red", stroke = TRUE, fillOpacity = 0.8 , 
-             radius = 80, group="Metro Stations") %>% 
+             radius = 80, group = "Metro Stations") %>% 
   addCircleMarkers(data = airbnb_clean, lng = ~ longitude, lat = ~ latitude, 
-                   radius = 1 , color="black",
+                   radius = 1 , color =" black",
                    fillColor = "#ffa500", stroke = TRUE, fillOpacity = 2, 
                    group="AirBnB Listings",
                    clusterOptions = markerClusterOptions()) %>%
@@ -354,7 +408,7 @@ map_poly <- m %>%
                    group="Background 1") %>%
   addTiles(options = providerTileOptions(noWrap = TRUE), 
            group="Background 2") %>%
-  addCircleMarkers(data=airbnb_clean, lng = ~ longitude,
+  addCircleMarkers(data = airbnb_clean, lng = ~ longitude,
                  lat = ~ latitude, radius=1 , color="black",
                  fillColor="#ffa500", stroke = TRUE, 
                  fillOpacity = 2, group="AirBnB Listings",
@@ -376,7 +430,7 @@ map_poly <- m %>%
 ```
 Regression Analysis
 
-```{r, echo=T, results="hide", warning=F, message=F}
+```{r, echo=T,results="hide", message=FALSE, warning=FALSE}
 set.seed(123)
 library(sjPlot)
 library(stargazer)
@@ -397,55 +451,67 @@ plot_mod_no_log <- plot_model(mod_no_log, type = "diag") %>% plot_grid()
 
 # Thus we take the log
 
-mod1 <- lm(log(price_dkk) ~ distance + dist_centrum,data = airbnb_clean)
+mod1 <- lm(price_dkk %>% log() ~ distance + dist_centrum, data = cph_data )
 plot_mod1 <- plot_model(mod1, type = "diag") %>% plot_grid()
-summary(mod1)
 
-mod2 <- lm(log(price_dkk) ~ distance + dist_centrum+
-             home+ accommodates + bathrooms 
-             ,data = airbnb_clean)
-summary(mod2)
+mod2 <- lm(price_dkk %>% log() ~ distance + dist_centrum + home + 
+             accommodates + bathrooms, data = cph_data)
 plot_mod2 <-plot_model(mod2, type = "diag") %>% plot_grid()
 
-mod3 <- lm(log(price_dkk) ~  distance + dist_centrum 
-           +home+ accommodates + bathrooms+
-             strict_cancel+ instant+ minimum_nights+cleaning_fee_dkk, 
-           data = cph_data)
-summary(mod3)
+mod3 <- lm(price_dkk %>% log() ~ distance + dist_centrum +
+             strict_cancel + instant + minimum_nights + cleaning_fee_dkk, data = cph_data)
 plot_mod3 <- plot_model(mod3, type = "diag") %>% plot_grid()
 
-
-mod4 <- lm(log(price_dkk) ~  distance + dist_centrum +
-           home+ accommodates + bathrooms+
-             strict_cancel + instant + minimum_nights+cleaning_fee_dkk + 
+mod4 <- lm(price_dkk %>% log() ~ distance + dist_centrum + 
              index + superhost +
-             listing_duration,
-           data = cph_data)
-summary(mod4)
+             listing_duration, data = cph_data)
 plot_mod4 <-plot_model(mod4, type = "diag") %>% plot_grid()
 
+mod5 <- lm(price_dkk %>% log() ~  distance + dist_centrum +
+             home + accommodates + bathrooms + strict_cancel + instant +
+             minimum_nights + cleaning_fee_dkk+
+             index + superhost + listing_duration, data = cph_data)
+plot_mod5 <-plot_model(mod5, type = "diag") %>% plot_grid()
+
 # Regressiondiagnostic
+# Robust SE
 library(lmtest)
 library(sandwich)
 
-coeftest(mod4, vcov = vcovHC(mod4))
+mod1_rob <- coeftest(mod1, vcov=vcovHC(mod1))
+mod2_rob <- coeftest(mod2, vcov=vcovHC(mod2))
+mod3_rob <- coeftest(mod3, vcov=vcovHC(mod3))
+mod4_rob <- coeftest(mod4, vcov=vcovHC(mod4))
+mod5_rob <- coeftest(mod5, vcov=vcovHC(mod5))
 
+## Multicollinearity
+
+car::vif(mod1)
+car::vif(mod2)
+car::vif(mod3)
+car::vif(mod4)
+car::vif(mod5)
+# no problems
+
+## Breusch–Pagan test
+# HO: homoscedasticity 
+
+bptest(mod1)
+bptest(mod2)
+bptest(mod3)
 bptest(mod4)
-
-# This test shows that we can reject the null that the variance of the residuals is constant, thus heteroskedacity is present.
-# To get the correct standard errors, we can use the 
-
-coeftest(mod4, vcov = vcovHC(mod4))
+bptest(mod5)
+# Heterosc. is existent in every model
 
 # Final stargazer output
-stargazer(mod1, mod2, mod3, mod4, 
+library(stargazer)
+stargazer(mod1, mod2, mod3, mod4,mod5, 
           type = "html", 
           title = "Linear Regression Model",  
           style = "ajs",  
           summary = NULL,  
           out.header = FALSE,
-          column.labels = c("Model 1", "Model 2", "Model 3", "Model 4"), 
-          column.separate = c(1,1), 
+          column.labels = c("Distance", "Property", "Rules", "Reputation", "Full model"), 
           covariate.labels = c("Distance Metro",  
                                "Distance Centre (Proxy)",
                                "Apartment (Dummy)",
@@ -458,13 +524,34 @@ stargazer(mod1, mod2, mod3, mod4,
                                "Review Index",
                                "Superhost",
                                "Listings duration"),
-          dep.var.caption = "Dep. Var",
+          dep.var.caption = "Dep. Var: Log Price per night in DKK",
           star.cutoffs = c(0.05,0.01,0.001),
-          dep.var.labels = c("Log Price per night in DKK"))
+          dep.var.labels.include = TRUE)
 
-
-
-
+# With robust SE
+stargazer(mod1_rob, mod2_rob, mod3_rob, mod4_rob,mod5_rob, 
+          type = "html", 
+          title = "Linear Regression Model (Robust SE)",  
+          style = "ajs",  
+          summary = NULL,  
+          out.header = FALSE, 
+          column.labels = c("Distance", "Property", "Rules", "Reputation", "Full model"),
+            column.sep.width = "5pt",
+          covariate.labels = c("Distance Metro",  # Covariate Labels
+                               "Distance Centre (Proxy)",
+                               "Apartment (Dummy)",
+                               "Accomodates",
+                               "Number of Bathrooms",
+                               "Strict Cancel",
+                               "Instant Booking",
+                               "Minimum nights",
+                               "Cleaning Fee",
+                               "Review Index",
+                               "Superhost",
+                               "Listings duration"),
+          dep.var.caption = "Dep. Var", # Caption (Top) of dependent variable
+          star.cutoffs = c(0.05,0.01,0.001),
+          dep.var.labels = c("Log Price per night in DKK", ""))
 
 ```
 
