@@ -356,13 +356,14 @@ $(document).ready(function () {
 
 <div id="hedonic-pricing-theory" class="section level2">
 <h2>Hedonic Pricing Theory</h2>
-<p>Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by <span class="citation">Rosen (1974)</span>. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.) In other words, the accommodation’s attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listings characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants are location, property characteristics, quality signaling factors, hotel amenities and services and external factors like the number of close competitors. <span class="citation">(^See Wang and Nicolau 2017 for a comprehensive list of studies on hotel price determinants.)</span></p>
+<p>Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by <span class="citation">Rosen (1974)</span>. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.). In other words, the accommodation’s attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listings characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants in these hotel focused studies are location, property characteristics, quality signaling factors, hotel amenities and services and external factors like the number of close competitors.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
 </div>
 <div id="airbnb-pricing" class="section level2">
 <h2>Airbnb pricing</h2>
-<p>Airbnb has many unique listing characteristics, for instance, the possibility of instant booking or difference in the flexibility of cancellations. In addition to that, there are many factors which could influence the pricing decision of the host which cannot be explained by the data we have at our disposal. Airbnb host is very diverse and different that a regression analysis on the price will not cover every factor determining the pricing strategy of a host.</p>
+<p>Airbnb has many unique listing characteristics, for instance, the possibility of instant booking or difference in the flexibility of cancellations. In addition to that, there are many factors which could influence the pricing decision of the host which cannot be explained by the data we have at our disposal. Airbnb hosts are very diverse and different that a regression analysis on the individual listing price will not cover every factor determining the pricing strategy of a host.</p>
 <p>Nevertheless, we divided the variables into four different sets: distance to the closest metro station, property characteristics, rental rules, and reputational (host) characteristics. Please note, due to its great amount of missing values the host’s response rate was excluded from the model, even though it might have a significant effect on the price.</p>
-<p>We use the price of the listings as our dependent variable in log form. The use of the log form means that we will interpret the effects of the independent variable to percentage changes in the listing prices. In addition, as <span class="citation">Sirmans, Macpherson, and Zietz (2005, 4)</span> have pointed out the fact that hedonic models in logarithmic forms are very beneficial: “]…] the hedonic pricing model is often estimated in semi-log form with the natural log of price used as the dependent variable. Then the coefficient estimates allow one to calculate the percentage change in price for a one-unit change in the given variable.”</p>
+<p>We use the price of the listings as our dependent variable in log form. The use of the log form means that we will interpret the effects of the independent variable to percentage changes in the listing prices. In addition, as <span class="citation">Sirmans, Macpherson, and Zietz (2005, 4)</span> have pointed out the fact that hedonic models in logarithmic forms are very beneficial: “[…] the hedonic pricing model is often estimated in semi-log form with the natural log of price used as the dependent variable. Then the coefficient estimates allow one to calculate the percentage change in price for a one-unit change in the given variable.”</p>
+<p>Our set of explanatory variables is therefore as follows:</p>
 <p>We are now able to formulate our hypothesis before we can begin with our regression analysis.</p>
 <p><em>Hypothesis 1:</em> The lesser the distance to the closest metro station, the higher the listing price.</p>
 <p><em>Hypothesis 2:</em> Instant Bookability and flexible cancellation rules are associated with higher listing prices.</p>
@@ -373,10 +374,6 @@ $(document).ready(function () {
 <h3>Regression diagnostic</h3>
 <p>The data set consists of a rough location of the listings (based on latitude and longitude). This enables us to include a measure for “distance to city center”, in this case, Nyhavn, as a proxy of how well a certain apartment is located within a city.</p>
 <p>Moreover, we checked for multicollinearity among the independent variables to avoid any undesired effects on the regression results and thus our interpretation.</p>
-</div>
-</div>
-<div id="calculate-the-distance" class="section level2">
-<h2>Calculate the distance</h2>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 ##    89.36  4783.91  5756.16  5674.86  7011.88 12692.54</code></pre>
 <pre><code>##          [,1]     [,2]     [,3]
@@ -388,7 +385,7 @@ $(document).ready(function () {
 ## [6,] 5324.121 3534.447 5771.846</code></pre>
 <pre><code>## [1] 13 17  9 10  4</code></pre>
 <pre><code>## [1]  640.8608 1167.9521 1347.5282  656.8279  261.9853  684.2862</code></pre>
-<p>We calculated the distance between the location of a listed rental and the city center, calculated using “Harversine formula” with latitude and longitude in line with @</p>
+</div>
 </div>
 <div id="regression" class="section level2">
 <h2>Regression</h2>
@@ -417,32 +414,40 @@ plot_model(mod1, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
 </td>
 <td>
 </td>
+<td>
+</td>
 </tr>
 <tr>
-<td colspan="5" style="border-bottom: 1px solid black">
+<td colspan="6" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
-<td colspan="4">
+<td>
 Log Price per night in DKK
 </td>
+<td colspan="4">
+PRICE_DKK %% LOG()
+</td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-Model Dist
+Distance
 </td>
 <td>
-M. Prop
+Property
 </td>
 <td>
-M. Rules
+Rules
 </td>
 <td>
-M.
+Reputation
+</td>
+<td>
+Full model
 </td>
 </tr>
 <tr>
@@ -460,9 +465,12 @@ M.
 <td>
 4
 </td>
+<td>
+5
+</td>
 </tr>
 <tr>
-<td colspan="5" style="border-bottom: 1px solid black">
+<td colspan="6" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
@@ -473,14 +481,17 @@ Distance Metro
 -0.000<sup>***</sup>
 </td>
 <td>
+-0.000
+</td>
+<td>
+-0.000<sup>**</sup>
+</td>
+<td>
 -0.000<sup>**</sup>
 </td>
 <td>
 -0.000
 </td>
-<td>
--0.000
-</td>
 </tr>
 <tr>
 <td style="text-align:left">
@@ -497,9 +508,14 @@ Distance Metro
 <td>
 (0.000)
 </td>
+<td>
+(0.000)
+</td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -526,6 +542,9 @@ Distance Centre (Proxy)
 <td>
 -0.000<sup>***</sup>
 </td>
+<td>
+-0.000<sup>***</sup>
+</td>
 </tr>
 <tr>
 <td style="text-align:left">
@@ -542,9 +561,14 @@ Distance Centre (Proxy)
 <td>
 (0.000)
 </td>
+<td>
+(0.000)
+</td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -562,10 +586,11 @@ Apartment (Dummy)
 <td>
 </td>
 <td>
-.438<sup>***</sup>
+.446<sup>***</sup>
 </td>
 <td>
-.412<sup>***</sup>
+</td>
+<td>
 </td>
 <td>
 .415<sup>***</sup>
@@ -577,10 +602,11 @@ Apartment (Dummy)
 <td>
 </td>
 <td>
-(.011)
+(.017)
 </td>
 <td>
-(.017)
+</td>
+<td>
 </td>
 <td>
 (.017)
@@ -588,6 +614,8 @@ Apartment (Dummy)
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -605,10 +633,11 @@ Accomodates
 <td>
 </td>
 <td>
-.128<sup>***</sup>
+.125<sup>***</sup>
 </td>
 <td>
-.109<sup>***</sup>
+</td>
+<td>
 </td>
 <td>
 .110<sup>***</sup>
@@ -620,10 +649,11 @@ Accomodates
 <td>
 </td>
 <td>
-(.003)
+(.004)
 </td>
 <td>
-(.004)
+</td>
+<td>
 </td>
 <td>
 (.004)
@@ -631,6 +661,8 @@ Accomodates
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -648,10 +680,11 @@ Number of Bathrooms
 <td>
 </td>
 <td>
-.247<sup>***</sup>
+.259<sup>***</sup>
 </td>
 <td>
-.221<sup>***</sup>
+</td>
+<td>
 </td>
 <td>
 .214<sup>***</sup>
@@ -663,10 +696,11 @@ Number of Bathrooms
 <td>
 </td>
 <td>
-(.017)
+(.022)
 </td>
 <td>
-(.022)
+</td>
+<td>
 </td>
 <td>
 (.022)
@@ -674,6 +708,8 @@ Number of Bathrooms
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -693,7 +729,9 @@ Strict Cancel
 <td>
 </td>
 <td>
-.014
+.024
+</td>
+<td>
 </td>
 <td>
 .011
@@ -707,7 +745,9 @@ Strict Cancel
 <td>
 </td>
 <td>
-(.011)
+(.014)
+</td>
+<td>
 </td>
 <td>
 (.011)
@@ -715,6 +755,8 @@ Strict Cancel
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -734,7 +776,9 @@ Instant Booking
 <td>
 </td>
 <td>
--.003
+-.022
+</td>
+<td>
 </td>
 <td>
 .011
@@ -748,7 +792,9 @@ Instant Booking
 <td>
 </td>
 <td>
-(.013)
+(.016)
+</td>
+<td>
 </td>
 <td>
 (.013)
@@ -756,6 +802,8 @@ Instant Booking
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -775,7 +823,9 @@ Minimum nights
 <td>
 </td>
 <td>
--.001<sup>*</sup>
+-0.000
+</td>
+<td>
 </td>
 <td>
 -0.000
@@ -792,11 +842,15 @@ Minimum nights
 (0.000)
 </td>
 <td>
+</td>
+<td>
 (0.000)
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -816,7 +870,9 @@ Cleaning Fee
 <td>
 </td>
 <td>
-0.000<sup>***</sup>
+.001<sup>***</sup>
+</td>
+<td>
 </td>
 <td>
 0.000<sup>***</sup>
@@ -833,11 +889,15 @@ Cleaning Fee
 (0.000)
 </td>
 <td>
+</td>
+<td>
 (0.000)
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -859,6 +919,9 @@ Review Index
 <td>
 </td>
 <td>
+.106<sup>***</sup>
+</td>
+<td>
 .098<sup>***</sup>
 </td>
 </tr>
@@ -872,11 +935,16 @@ Review Index
 <td>
 </td>
 <td>
+(.024)
+</td>
+<td>
 (.017)
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -898,6 +966,9 @@ Superhost
 <td>
 </td>
 <td>
+-.056<sup>**</sup>
+</td>
+<td>
 .030<sup>*</sup>
 </td>
 </tr>
@@ -911,11 +982,16 @@ Superhost
 <td>
 </td>
 <td>
+(.019)
+</td>
+<td>
 (.014)
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -939,6 +1015,9 @@ Listings duration
 <td>
 0.000<sup>***</sup>
 </td>
+<td>
+0.000<sup>***</sup>
+</td>
 </tr>
 <tr>
 <td style="text-align:left">
@@ -952,9 +1031,14 @@ Listings duration
 <td>
 (0.000)
 </td>
+<td>
+(0.000)
+</td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -973,10 +1057,13 @@ Constant
 6.881<sup>***</sup>
 </td>
 <td>
-5.840<sup>***</sup>
+5.846<sup>***</sup>
 </td>
 <td>
-5.834<sup>***</sup>
+6.583<sup>***</sup>
+</td>
+<td>
+5.827<sup>***</sup>
 </td>
 <td>
 4.832<sup>***</sup>
@@ -989,10 +1076,13 @@ Constant
 (.013)
 </td>
 <td>
-(.020)
+(.028)
 </td>
 <td>
-(.028)
+(.021)
+</td>
+<td>
+(.240)
 </td>
 <td>
 (.171)
@@ -1000,6 +1090,8 @@ Constant
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -1018,7 +1110,10 @@ Observations
 7,534
 </td>
 <td>
-7,515
+3,869
+</td>
+<td>
+3,869
 </td>
 <td>
 3,869
@@ -1035,10 +1130,13 @@ R<sup>2</sup>
 .094
 </td>
 <td>
-.541
+.538
 </td>
 <td>
-.560
+.283
+</td>
+<td>
+.111
 </td>
 <td>
 .566
@@ -1052,10 +1150,13 @@ Adjusted R<sup>2</sup>
 .093
 </td>
 <td>
-.540
+.538
 </td>
 <td>
-.559
+.282
+</td>
+<td>
+.109
 </td>
 <td>
 .564
@@ -1069,10 +1170,13 @@ Residual Std. Error
 .463 (df = 7531)
 </td>
 <td>
-.328 (df = 7509)
+.338 (df = 3863)
 </td>
 <td>
-.331 (df = 3859)
+.422 (df = 3862)
+</td>
+<td>
+.470 (df = 3863)
 </td>
 <td>
 .329 (df = 3856)
@@ -1086,38 +1190,768 @@ F Statistic
 389.268<sup>***</sup> (df = 2; 7531)
 </td>
 <td>
-1,768.163<sup>***</sup> (df = 5; 7509)
+901.331<sup>***</sup> (df = 5; 3863)
 </td>
 <td>
-545.359<sup>***</sup> (df = 9; 3859)
+254.592<sup>***</sup> (df = 6; 3862)
+</td>
+<td>
+96.024<sup>***</sup> (df = 5; 3863)
 </td>
 <td>
 418.535<sup>***</sup> (df = 12; 3856)
 </td>
 </tr>
 <tr>
-<td colspan="5" style="border-bottom: 1px solid black">
+<td colspan="6" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 <em>Notes:</em>
 </td>
-<td colspan="4" style="text-align:left">
+<td colspan="5" style="text-align:left">
 <sup>*</sup>P &lt; .05
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
-<td colspan="4" style="text-align:left">
+<td colspan="5" style="text-align:left">
 <sup>**</sup>P &lt; .01
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
-<td colspan="4" style="text-align:left">
+<td colspan="5" style="text-align:left">
+<sup>***</sup>P &lt; .001
+</td>
+</tr>
+</table>
+<table style="text-align:center">
+<caption>
+<strong>Linear Regression Model (Robust SE)</strong>
+</caption>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td colspan="6" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="5">
+Log Price per night in DKK
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+Distance
+</td>
+<td>
+Property
+</td>
+<td>
+Rules
+</td>
+<td>
+Reputation
+</td>
+<td>
+Full model
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+5
+</td>
+</tr>
+<tr>
+<td colspan="6" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Distance Metro
+</td>
+<td>
+-0.000<sup>**</sup>
+</td>
+<td>
+-0.000
+</td>
+<td>
+-0.000<sup>**</sup>
+</td>
+<td>
+-0.000<sup>**</sup>
+</td>
+<td>
+-0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Distance Centre (Proxy)
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Apartment (Dummy)
+</td>
+<td>
+</td>
+<td>
+.446<sup>***</sup>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.415<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(.016)
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.017)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Accomodates
+</td>
+<td>
+</td>
+<td>
+.125<sup>***</sup>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.110<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(.004)
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.005)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Number of Bathrooms
+</td>
+<td>
+</td>
+<td>
+.259<sup>***</sup>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.214<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(.030)
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.029)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Strict Cancel
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.024
+</td>
+<td>
+</td>
+<td>
+.011
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.015)
+</td>
+<td>
+</td>
+<td>
+(.011)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Instant Booking
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+-.022
+</td>
+<td>
+</td>
+<td>
+.011
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.018)
+</td>
+<td>
+</td>
+<td>
+(.013)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Minimum nights
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+-0.000
+</td>
+<td>
+</td>
+<td>
+-0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.000)
+</td>
+<td>
+</td>
+<td>
+(.001)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Cleaning Fee
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.001<sup>***</sup>
+</td>
+<td>
+</td>
+<td>
+0.000<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.000)
+</td>
+<td>
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Review Index
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.106<sup>***</sup>
+</td>
+<td>
+.098<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.026)
+</td>
+<td>
+(.019)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Superhost
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+-.056<sup>**</sup>
+</td>
+<td>
+.030<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.019)
+</td>
+<td>
+(.013)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Listings duration
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.000<sup>***</sup>
+</td>
+<td>
+0.000<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+6.934<sup>***</sup>
+</td>
+<td>
+5.846<sup>***</sup>
+</td>
+<td>
+6.583<sup>***</sup>
+</td>
+<td>
+5.827<sup>***</sup>
+</td>
+<td>
+4.832<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(.021)
+</td>
+<td>
+(.032)
+</td>
+<td>
+(.043)
+</td>
+<td>
+(.256)
+</td>
+<td>
+(.192)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td colspan="6" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Notes:</em>
+</td>
+<td colspan="5" style="text-align:left">
+<sup>*</sup>P &lt; .05
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="5" style="text-align:left">
+<sup>**</sup>P &lt; .01
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="5" style="text-align:left">
 <sup>***</sup>P &lt; .001
 </td>
 </tr>
@@ -1164,6 +1998,12 @@ F Statistic
 <p>Wang, Dan, and Juan L Nicolau. 2017. “Price Determinants of Sharing Economy Based Accommodation Rental: A Study of Listings from 33 Cities on Airbnb. Com.” <em>International Journal of Hospitality Management</em> 62. Elsevier: 120–31.</p>
 </div>
 </div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>See <span class="citation">Wang and Nicolau (2017)</span> for a comprehensive list of studies on hotel price determinants.<a href="#fnref1">↩</a></p></li>
+</ol>
 </div>
 
 

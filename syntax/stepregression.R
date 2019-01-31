@@ -46,27 +46,65 @@ mod4 <- lm(log(price_dkk) ~  distance + dist_centrum
 summary(mod4)
 plot_mod4 <-plot_model(mod4, type = "diag") %>% plot_grid()
 
-stargazer(mod4)
 library(lmtest)
-
 library(sandwich)
 
-coeftest(mod4, vcov = vcovHC(mod4))
+library(lmtest)
+library(sandwich)
+mod1 <- lm(price_dkk %>% log() ~ distance + dist_centrum,data = cph_data )
+mod2 <- lm(price_dkk %>% log() ~ distance + dist_centrum+ home+ accommodates + bathrooms, data = cph_data)
+mod3 <- lm(price_dkk %>% log() ~ distance + dist_centrum +
+             strict_cancel + instant + minimum_nights + cleaning_fee_dkk, data = cph_data)
+mod4 <- lm(price_dkk %>% log() ~ distance + dist_centrum + +
+             index + superhost+
+             listing_duration, data = cph_data)
+mod5 <- lm(price_dkk %>% log() ~  distance + dist_centrum +
+             home + accommodates + bathrooms + strict_cancel+ instant + minimum_nights+cleaning_fee_dkk+
+             index + superhost + listing_duration, data = cph_data)
+mod1_rob <- coeftest(mod1, vcov=vcovHC(mod1))
+mod2_rob <- coeftest(mod2, vcov=vcovHC(mod2))
+mod3_rob <- coeftest(mod3, vcov=vcovHC(mod3))
+mod4_rob <- coeftest(mod4, vcov=vcovHC(mod4))
+mod5_rob <- coeftest(mod5, vcov=vcovHC(mod5))
 
-bptest(mod4)
-
-# This test shows that we can reject the null that the variance of the residuals is constant, thus heteroskedacity is present.
-# To get the correct standard errors, we can use the 
-
-coeftest(mod4, vcov = vcovHC(mod4))
-
-stargazer(mod1, mod2, mod3, mod4,#regression models 
+stargazer(mod1_rob, mod2_rob, mod3_rob, mod4_rob,mod5_rob, #regression models 
           type = "html", # character vector (eg. "text" / "html" / "latex")
+          title = "Linear Regression Model (Robust SE)",  # header
+          style = "ajs",  # style (choice see below)
+          summary = NULL,  # logical vector: output summary statistics when given data.frame# path and output of file
+          out.header = FALSE, # logical vector: should output file contain code-header?
+          column.labels = c("Model 1", "Model 2", "Model 3", "Model 4", "model5"), # column labels for mod1/mod2
+          column.separate = c(1,1),  # how column labels should be assigned (label over sev. columns possible)
+          covariate.labels = c("Distance Metro",  # Covariate Labels
+                               "Distance Centre (Proxy)",
+                               "Apartment (Dummy)",
+                               "Accomodates",
+                               "Number of Bathrooms",
+                               "Strict Cancel",
+                               "Instant Booking",
+                               "Minimum nights",
+                               "Cleaning Fee",
+                               "Review Index",
+                               "Superhost",
+                               "Listings duration"),
+          dep.var.caption = "Dep. Var", # Caption (Top) of dependent variable
+          star.cutoffs = c(0.05,0.01,0.001),
+          dep.var.labels = c("Log Price per night in DKK"))
+
+
+
+
+
+
+
+
+stargazer(mod1, mod2, mod3, mod4,mod5,#regression models 
+          type = "text", # character vector (eg. "text" / "html" / "latex")
           title = "Linear Regression Model",  # header
           style = "ajs",  # style (choice see below)
           summary = NULL,  # logical vector: output summary statistics when given data.frame# path and output of file
           out.header = FALSE, # logical vector: should output file contain code-header?
-          column.labels = c("Model 1", "Model 2", "Model 3", "Model 4"), # column labels for mod1/mod2
+          column.labels = c("Model 1", "Model 2", "Model 3", "Model 4", "All"), # column labels for mod1/mod2
           column.separate = c(1,1),  # how column labels should be assigned (label over sev. columns possible)
           covariate.labels = c("Distance Metro",  # Covariate Labels
                                "Distance Centre (Proxy)",

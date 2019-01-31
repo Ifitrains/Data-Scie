@@ -7,18 +7,20 @@ bibliography: bibfile.bib
 
 ## Hedonic Pricing Theory
 
-Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by @rosen1974hedonic. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.) In other words, the accommodation's attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listings characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants are location, property characteristics, quality signaling factors, hotel amenities and
-services and external factors like the number of close competitors.  [^See @wang2017price for a comprehensive list of studies on hotel price determinants.]
+Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by @rosen1974hedonic. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.). In other words, the accommodation's attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listings characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants in these hotel focused studies are location, property characteristics, quality signaling factors, hotel amenities and
+services and external factors like the number of close competitors.  ^[See @wang2017price for a comprehensive list of studies on hotel price determinants.]
 
 
 ## Airbnb pricing
 
-Airbnb has many unique listing characteristics, for instance, the possibility of instant booking or difference in the flexibility of cancellations. In addition to that, there are many factors which could influence the pricing decision of the host which cannot be explained by the data we have at our disposal. Airbnb host is very diverse and different that a regression analysis on the price will not cover every factor determining the pricing strategy of a host. 
 
-Nevertheless, we divided the variables into four different sets: distance to the closest metro station, property characteristics, rental rules, and reputational (host) characteristics. Please note, due to
-its great amount of missing values the host's response rate was excluded from the model, even though it might have a significant effect on the price.
+Airbnb has many unique listing characteristics, for instance, the possibility of instant booking or difference in the flexibility of cancellations. In addition to that, there are many factors which could influence the pricing decision of the host which cannot be explained by the data we have at our disposal. Airbnb hosts are very diverse and different that a regression analysis on the individual listing price will not cover every factor determining the pricing strategy of a host. 
 
-We use the price of the listings as our dependent variable in log form. The use of the log form means that we will interpret the effects of the independent variable to percentage changes in the listing prices. In addition, as @sirmans2005composition [p. 4] have pointed out the fact that hedonic models in logarithmic forms are very beneficial: "]...] the hedonic pricing model is often estimated in semi-log form with the natural log of price used as the dependent variable. Then the coefficient estimates allow one to calculate the percentage change in price for a one-unit change in the given variable." 
+Nevertheless, we divided the variables into four different sets: distance to the closest metro station, property characteristics, rental rules, and reputational (host) characteristics. Please note, due to its great amount of missing values the host's response rate was excluded from the model, even though it might have a significant effect on the price.
+
+We use the price of the listings as our dependent variable in log form. The use of the log form means that we will interpret the effects of the independent variable to percentage changes in the listing prices. In addition, as @sirmans2005composition [p. 4] have pointed out the fact that hedonic models in logarithmic forms are very beneficial: "[...] the hedonic pricing model is often estimated in semi-log form with the natural log of price used as the dependent variable. Then the coefficient estimates allow one to calculate the percentage change in price for a one-unit change in the given variable." 
+
+Our set of explanatory variables is therefore as follows: 
 
 We are now able to formulate our hypothesis before we can begin with our regression analysis.
 
@@ -138,8 +140,6 @@ colnames(metro_df) <- c("metro","lat", "long")
 
 ```
 
-## Calculate the distance
-
 ```{r distance, echo=F, warning=F, message=F}
 library(geosphere)
 
@@ -189,8 +189,6 @@ airbnb_clean$dist_centrum <- AirBnBCopenhagen::distance(airbnb_clean$longitude,
                                        airbnb_clean$latitude,
                                 nyhavn_lng, nyhavn_lat)
 ```
-We calculated the distance between the location of a listed rental and the city center, calculated using "Harversine formula" with latitude and longitude
-in line with @
 
 
 
@@ -220,13 +218,13 @@ Now we can finally take a look at our whole regression model. We included the va
 ```{r regression stargazer,results='asis', echo=F, warning=F, message=F}
 
 library(stargazer)
-stargazer(mod1, mod2, mod3, mod4, 
+stargazer(mod1, mod2, mod3, mod4,mod5, 
           type = "html", 
           title = "Linear Regression Model",  
           style = "ajs",  
           summary = NULL,  
           out.header = FALSE,
-          column.labels = c("Model Dist", "M. Prop", "M. Rules", "M."), 
+          column.labels = c("Distance", "Property", "Rules", "Reputation", "Full model"), 
           covariate.labels = c("Distance Metro",  
                                "Distance Centre (Proxy)",
                                "Apartment (Dummy)",
@@ -240,6 +238,30 @@ stargazer(mod1, mod2, mod3, mod4,
                                "Superhost",
                                "Listings duration"),
           dep.var.caption = "Dep. Var",
+          star.cutoffs = c(0.05,0.01,0.001),
+          dep.var.labels = c("Log Price per night in DKK"))
+
+
+stargazer(mod1_rob, mod2_rob, mod3_rob, mod4_rob,mod5_rob, #regression models 
+          type = "html", # character vector (eg. "text" / "html" / "latex")
+          title = "Linear Regression Model (Robust SE)",  # header
+          style = "ajs",  # style (choice see below)
+          summary = NULL,  # logical vector: output summary statistics when given data.frame# path and output of file
+          out.header = FALSE, # logical vector: should output file contain code-header?
+          column.labels = c("Distance", "Property", "Rules", "Reputation", "Full model"), 
+          covariate.labels = c("Distance Metro",  # Covariate Labels
+                               "Distance Centre (Proxy)",
+                               "Apartment (Dummy)",
+                               "Accomodates",
+                               "Number of Bathrooms",
+                               "Strict Cancel",
+                               "Instant Booking",
+                               "Minimum nights",
+                               "Cleaning Fee",
+                               "Review Index",
+                               "Superhost",
+                               "Listings duration"),
+          dep.var.caption = "Dep. Var", # Caption (Top) of dependent variable
           star.cutoffs = c(0.05,0.01,0.001),
           dep.var.labels = c("Log Price per night in DKK"))
 
