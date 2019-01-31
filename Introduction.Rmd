@@ -11,9 +11,9 @@ bibliography: bibfile.bib
 ## Motivation
 
 
-In Spring 2018 I had the opportunity to study in this amazing city with its high living quality. Some of the friends that visited me during my stay found an accommodation via AirBnB which encouraged me to focus my "Data Science Project" a topic that I have experienced myself in a couple of cases - The AirBnB market in Copenhagen. In addition I will (try to) answer some questions that arose during my stay in one of Europe’s mayor capitals. 
+In Spring 2018 I had the opportunity to study in this amazing city with its high living quality. Some of the friends that visited me during my stay found an accommodation via AirBnB which encouraged me to focus on my "Data Science Project" a topic that I have experienced myself in a couple of cases - The AirBnB market in Copenhagen. In addition I will (try to) answer some questions that arose during my stay in one of Europe’s mayor capitals. 
 
-My recommendation after living in Copenhagen for six months is to find an apartment close to one of Copenhagen’s metro stations. It connects the western part with the city center and the eastern part where the airport is located. Not only is it driverless, very modern and operates 24/7, but the easy access to the city is also remarkable. In less than 15 minutes it is possible to get form the airport to the city center which is in comparison to other European capitals quite an achievement.
+My recommendation after living in Copenhagen for six months is to find an apartment close to one of Copenhagen’s metro stations. It connects the western part with the city center and the eastern part where the airport is located. Not only is it driverless, very modern and operates 24/7, but the easy access to the city is also remarkable. In less than 15 minutes it is possible to get form the airport to the city center which in comparison to other European capitals is quite an achievement.
 
 Although I suppose that the value or the price of an accommodation is mainly defined by its location – more expensive in the city center than in the suburbs - , I would like to concentrate on the following question which is based on the recommendations I gave and my personal interest on whether the market “agrees” with my opinion:
 
