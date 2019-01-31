@@ -7,11 +7,16 @@ cph_data <- airbnb_clean[,c("price_dkk","index","strict_cancel",
                             "listing_duration", "instant",
                             "security_deposit_dkk",
                             "accommodates","minimum_nights" ,
-                            "bathrooms", "distance", "dist_centrum")] %>% na.omit()
+                            "bathrooms", "distance", 
+                            "dist_centrum")] %>% na.omit()
+
+
 
 # Correlation Matrix
 res <- cor(cph_data)
 round(res, 2)
+
+
 
 
 mod_no_log <- lm(price_dkk ~ distance + dist_centrum,data = airbnb_clean )
@@ -61,11 +66,34 @@ mod4 <- lm(price_dkk %>% log() ~ distance + dist_centrum + +
 mod5 <- lm(price_dkk %>% log() ~  distance + dist_centrum +
              home + accommodates + bathrooms + strict_cancel+ instant + minimum_nights+cleaning_fee_dkk+
              index + superhost + listing_duration, data = cph_data)
+
+# Robust SE
+
 mod1_rob <- coeftest(mod1, vcov=vcovHC(mod1))
 mod2_rob <- coeftest(mod2, vcov=vcovHC(mod2))
 mod3_rob <- coeftest(mod3, vcov=vcovHC(mod3))
 mod4_rob <- coeftest(mod4, vcov=vcovHC(mod4))
 mod5_rob <- coeftest(mod5, vcov=vcovHC(mod5))
+
+## Multicollinearity
+
+car::vif(mod1)
+car::vif(mod2)
+car::vif(mod3)
+car::vif(mod4)
+car::vif(mod5)
+# no problems
+
+## Breusch–Pagan test
+# HO: homoscedasticity 
+
+bptest(mod1)
+bptest(mod2)
+bptest(mod3)
+bptest(mod4)
+bptest(mod5)
+# Heterosc. is existent in every model
+# Visualisation
 
 stargazer(mod1_rob, mod2_rob, mod3_rob, mod4_rob,mod5_rob, #regression models 
           type = "html", # character vector (eg. "text" / "html" / "latex")

@@ -194,7 +194,7 @@ airbnb_clean <- airbnb_clean %>%
   mutate(price_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$price))) %>% 
   mutate(extra_people_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$extra_people))) %>% 
   mutate(security_deposit_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$security_deposit))) %>% 
-  filter(price_dkk > 0 & price_dkk < 17500)
+  filter(price_dkk > 0 & price_dkk < 17500 & security_deposit_dkk < 17500)
 dim(airbnb_clean)
 ```
 
@@ -282,6 +282,11 @@ index = ((airbnb_clean$review_scores_accuracy + airbnb_clean$review_scores_clean
 
 ```
 
+
+
+
+
+
 Finally, in order to calculate the distance from the listings to the metro stations we need additional data:
 
 ```{r, echo=T, warning=F, message=F}
@@ -367,6 +372,36 @@ airbnb_clean$dist_centrum <- AirBnBCopenhagen::distance(airbnb_clean$longitude,
 ```
 We calculated the distance between the location of a listed rental and the city center, calculated using "Harversine formula" with latitude and longitude
 in line with @robusto1957cosine.
+
+### Descriptive Analysis
+We can summarise our analysis so far in a descriptive statistics of all study variables:
+
+```{r descrp, results='asis', echo=F, warning=F, message=F}
+library(stargazer)
+cph_data <- airbnb_clean[,c("price_dkk","index","strict_cancel",
+                            "home","cleaning_fee_dkk","superhost", 
+                            "listing_duration", "instant",
+                            "security_deposit_dkk",
+                            "accommodates","minimum_nights" ,
+                            "bathrooms", "distance", 
+                            "dist_centrum")] %>% na.omit()
+
+
+stargazer(as.data.frame(cph_data)[, c("price_dkk","index","strict_cancel",
+                       "home","cleaning_fee_dkk","superhost", 
+                       "listing_duration", "instant",
+                       "security_deposit_dkk",
+                       "accommodates","minimum_nights" ,
+                       "bathrooms", "distance", 
+                       "dist_centrum")], type = "html",
+                        digits = 2,
+                        summary.stat = c("mean","sd","median","min", "max"))
+
+
+
+```
+
+
 
 Now we have the data in a format ready for visualizing and the regression. The full code can be found in the source code. 
 
