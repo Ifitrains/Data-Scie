@@ -198,7 +198,7 @@ in line with ....
 
 
 ```{r regression source, message=F, warning=F, include=FALSE, paged.print=FALSE, results='hide'}
-source("syntax/stepregression.R", encoding = "utf-8")
+source("docs/syntax/stepregression.R", encoding = "utf-8")
 ```
 
 The usage of the log on our dependent variable is justified when we look at the following graphs. Recall that basic linear regression requires some assumptions in order to be valid: linearity (& no influential outliers), homoscedasticity of variance, independence of the error term, little or no multicollinearity and normally distributed residuals. 
