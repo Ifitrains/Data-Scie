@@ -302,7 +302,7 @@ map_nyhavn %>% addMarkers(lat =55.679687, lng = 12.590659, popup=nyhavn)
 
 ## Mapping the neighborhoods
 
-The Neighbourhoods GEOJSON file contains which will enable us to visualise them on a map. 
+The Neighbourhoods GEOJSON file contains geocoordinates of Copenhagen's neighbourhoods which will enable us to visualise them on a map. 
 
 ```{r, echo=F, warning=F, message=F}
 library(AirBnBCopenhagen)

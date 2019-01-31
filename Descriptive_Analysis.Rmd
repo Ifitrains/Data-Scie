@@ -375,7 +375,20 @@ in line with @robusto1957cosine.
 
 ### Descriptive Analysis
 We can summarise our analysis so far in a descriptive statistics of all study variables:
+<style>
 
+table, td, th {
+  border: none;
+  padding-left: 1em;
+  padding-right: 1em;
+  min-width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+</style>
 ```{r descrp, results='asis', echo=F, warning=F, message=F}
 library(stargazer)
 cph_data <- airbnb_clean[,c("price_dkk","index","strict_cancel",
@@ -386,16 +399,40 @@ cph_data <- airbnb_clean[,c("price_dkk","index","strict_cancel",
                             "bathrooms", "distance", 
                             "dist_centrum")] %>% na.omit()
 
+colnames(cph_data) <- c("Price per night (DKK)",
+                                  "Review Index",
+                                  "Strict Cancellation",
+                                  "Full apartment/house",
+                                  "Cleaning Fee (DKK)",
+                                  "Superhost",
+                                  "Duration of Listing (days)",
+                                  "Instant Bookable",
+                                  "Security Deposit (DKK)",
+                                  "No. Accommodates",
+                                  "Minimum Nights",
+                                  "No. Bathrooms",
+                                  "Distance Metro",
+                                  "Distance Center")
 
-stargazer(as.data.frame(cph_data)[, c("price_dkk","index","strict_cancel",
-                       "home","cleaning_fee_dkk","superhost", 
-                       "listing_duration", "instant",
-                       "security_deposit_dkk",
-                       "accommodates","minimum_nights" ,
-                       "bathrooms", "distance", 
-                       "dist_centrum")], type = "html",
+
+stargazer(as.data.frame(cph_data)[, c("Price per night (DKK)",
+                                  "Review Index",
+                                  "Strict Cancellation",
+                                  "Full apartment/house",
+                                  "Cleaning Fee (DKK)",
+                                  "Superhost",
+                                  "Duration of Listing (days)",
+                                  "Instant Bookable",
+                                  "Security Deposit (DKK)",
+                                  "No. Accommodates",
+                                  "Minimum Nights",
+                                  "No. Bathrooms",
+                                  "Distance Metro",
+                                  "Distance Center")], type = "html",
                         digits = 2,
-                        summary.stat = c("mean","sd","median","min", "max"))
+                        summary.stat = c("mean","sd","median","min", "max"),
+          font.size = "small",
+          column.sep.width = "10pt")
 
 
 

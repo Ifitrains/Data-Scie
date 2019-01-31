@@ -252,9 +252,8 @@ stargazer(mod1, mod2, mod3, mod4,mod5,
                                "Review Index",
                                "Superhost",
                                "Listings duration"),
-          dep.var.caption = "Dep. Var",
+          dep.var.caption = "Dep. Var: Log Price per night in DKK",
           star.cutoffs = c(0.05,0.01,0.001),
-          dep.var.labels = c("Log Price per night in DKK"),
           dep.var.labels.include = TRUE)
 ```
 <style>
