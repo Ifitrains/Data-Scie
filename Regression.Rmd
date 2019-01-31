@@ -7,7 +7,7 @@ bibliography: bibfile.bib
 
 ## Hedonic Pricing Theory
 
-Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by @rosen1974hedonic. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.). In other words, the accommodation's attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listings characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. In the same vein, on of the limitations of the hedonic pricing method lies in its limited ability to set rules for selecting variables for the analysis. As @andersson2000hypothesis[p. 294] puts it: "There are no theoretical arguments in favor of a specific set of independent variables". Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants in these hotel focused studies are location, property characteristics, quality signaling factors, hotel amenities and
+Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by @rosen1974hedonic. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.). In other words, the accommodation's attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listing's characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. In the same vein, on of the limitations of the hedonic pricing method lies in its limited ability to set rules for selecting variables for the analysis. As @andersson2000hypothesis[p. 294] puts it: "There are no theoretical arguments in favor of a specific set of independent variables". Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants in these hotel focused studies are location, property characteristics, quality signaling factors, hotel amenities and
 services and external factors like the number of close competitors.  ^[See @wang2017price for a comprehensive list of studies on hotel price determinants.]
 
 
@@ -36,9 +36,9 @@ Our set of explanatory variables which will enter into an ordinary least squares
 
 ***
 
-Based on hedonic pricing theory the hypothesis can me formulated as follows: 
+Based on hedonic pricing theory the hypothesis can be formulated as follows: 
 
-*Hypothesis 1:* The lesser the distance to the closest metro station, the higher the listing price.
+*Hypothesis 1:* The smaller the distance to the closest metro station, the higher the listing price.
 
 *Hypothesis 2:* Instant Bookability and flexible cancellation rules are associated with higher listing prices.
 
@@ -46,7 +46,7 @@ Based on hedonic pricing theory the hypothesis can me formulated as follows:
 
 *Hypothesis 4:* Superhost status is associated with higher prices
 
-Thus, out final regression equation looks like the following:
+Thus, our final regression equation looks like the following:
 $$log(price_i) = \alpha + \delta D_i + \beta R_i + \gamma U_i + \tau P_i  + \epsilon_i $$
 where $price_i$ reflects the individual price per night, $\alpha$ the intercept, the vector $D$ reflects the distance measures, the $R$ vector contains rental listing features
 and the vector $U$ is composed of rental rules and lastly $P$ describe reputational characteristics of the listing.
@@ -216,7 +216,7 @@ source("docs/syntax/stepregression.R", encoding = "utf-8")
 ```
 
 The usage of the log on our dependent variable is justified when we look at the following graphs. 
-When the data is not normally distributed a non-linear transformation (e.g., log-transformation) might fix this issue. One can clearly see that the regression in the standard, no log form, is indeed not normally distributed. Thus, it is reasonable to adjust accordingly and use the log-form henceforth. 
+When the data is not normally distributed a non-linear transformation (e.g., log-transformation) might fix this issue. In other words, a log transformation will make skewed distribution more normally distributed. One can clearly see that the regression in the standard, no log form, is indeed not normally distributed. Thus, it is reasonable to adjust accordingly and use the log-form henceforth. 
 
 ```{r regression diagnostic,results='asis', echo=T, warning=F, message=F}
 mod_no_log <- lm(price_dkk ~ distance + dist_centrum, data = airbnb_clean)
@@ -228,7 +228,8 @@ mod1 <- lm(log(price_dkk) ~ distance + dist_centrum, data = airbnb_clean)
 plot_model(mod1, type = "diag") %>% plot_grid()
 ```
 
-Now we can finally take a look at our whole regression model. We included the variables step by step in order to see how the coefficients change. 
+Now we can finally take a look at our whole regression model. We included the variables step by step in order to see how the coefficients change. We start first with the estimates of the distance variables on the price. We keep these variables and regress them together with each other variable set separately (Property, Rules, Reputation). Finally, we will calculate the coefficients of regression of all explanatory variable against the dependent variable.
+
 
 ```{r regression stargazer,results='asis', echo=F, warning=F, message=F}
 
@@ -254,7 +255,7 @@ stargazer(mod1, mod2, mod3, mod4,mod5,
                                "Listings duration"),
           dep.var.caption = "Dep. Var: Log Price per night in DKK",
           star.cutoffs = c(0.05,0.01,0.001),
-          dep.var.labels.include = TRUE)
+          dep.var.labels= c("Log Price per night in DKK", ""))
 ```
 <style>
 
@@ -314,7 +315,7 @@ stargazer(mod1_rob, mod2_rob, mod3_rob, mod4_rob,mod5_rob,
 
 ## Limitations
 
-There are some limitations concerning the data used in the analysis. Although the provision of data from AirbnbInside.com is very useful, it is clear that there will be a difference between advertised listings and booked listings. The problem is that some of the advertised listings, which is the basis for the InsideAirbnb-dataset, are outdated or created by accident and are thus not booked. I tried to control for this by setting a minimum requirement concerning the number of reviews as well as the verification of the host as a necessary condition. "Scrapers that track updates to host calendars cannot distinguish real bookings from dates host block for other reasons."  @coles2017airbnb
+There are some limitations concerning the data used in the analysis. Although the provision of data from AirbnbInside.com is very useful, it is clear that there will be a difference between advertised listings and booked listings. The problem is that some of the advertised listings, which is the basis for the InsideAirbnb-dataset, are outdated or created by accident and are thus not booked. I tried to control for this by setting a minimum requirement concerning the number of reviews as well as the verification of the host as a necessary condition. "Scrapers that track updates to host calendars cannot distinguish real bookings from dates host block for other reasons." [@coles2017airbnb]
 
 @coles2017airbnb also point to the fact that there is a discrepancy between the price listed and the actual transaction price. The scraping method does not include any corrections for specific discounts, i.e. weekly discount.
 
@@ -322,25 +323,19 @@ In addition to that, in a next analysis, a researcher could investigate the infl
 
 
 
-
-
-
-
 ## Final Findings Summarized:
 
 
- * Distance to the closest metro station does not affect the price of the rental. As a result, a potential accommodation should always include a short distance to the next metro station. 
+ * Distance to the closest metro station does not affect the price of the rental. We can interpret this result from the lens of a visitor who is looking for a potential accommodation. The result suggest that, from a utility maximazing point of view, a visitor should always include a short distance to the next metro station into his personal search. It will not be to his or her disadvantage. 
 
  * Higher prices are associated with the number of bathrooms, how many people the listing can accommodate and the reputation of the listings displayed in its reviews.
 
  * Cancellation policies are fairly spread out, but the analysis showed that the expected relationship cannot be detected in the data. It seems to have no effect on the price of the listing. 
  
- * Most top 5 words in description shows that more hosts talk about the surrounding area rather than the listing itself.
- 
- * However, the rental price is unaffected by the number of minimum nights and the possibility to book a listing instantly.
+ * However, there is no (significant) relationship between the rental price and the number of minimum nights or the possibility to book a listing instantly.
 
 
-## Final Recommendations
+### Recommendation
 
 *Which effect does the distance to the closest metro station have on the price of the accommodation?*  The analysis showed that it the distance is not included in the price, yet. In my opinion it is a good thing that it is not reflected in the price. If we overlook the possibility of misspecification of the model, it hints at the fact that accoding to the hedonic price model hosts do not account for this characteristic in their pricing strategy - even though it provides additional value to the consumer. I would, therefore, encourage future visitors to check (Google-) the location of the AirBnB before booking. *If it rains* you will thank me for it.  
 

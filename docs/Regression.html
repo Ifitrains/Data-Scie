@@ -356,7 +356,7 @@ $(document).ready(function () {
 
 <div id="hedonic-pricing-theory" class="section level2">
 <h2>Hedonic Pricing Theory</h2>
-<p>Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by <span class="citation">Rosen (1974)</span>. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.). In other words, the accommodation’s attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listings characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. In the same vein, on of the limitations of the hedonic pricing method lies in its limited ability to set rules for selecting variables for the analysis. As <span class="citation">(<span class="citeproc-not-found" data-reference-id="andersson2000hypothesis"><strong>???</strong></span>)</span> puts it: “There are no theoretical arguments in favor of a specific set of independent variables”. Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants in these hotel focused studies are location, property characteristics, quality signaling factors, hotel amenities and services and external factors like the number of close competitors.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p>Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by <span class="citation">Rosen (1974)</span>. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.). In other words, the accommodation’s attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listing’s characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. In the same vein, on of the limitations of the hedonic pricing method lies in its limited ability to set rules for selecting variables for the analysis. As <span class="citation">Andersson (2000, 294)</span> puts it: “There are no theoretical arguments in favor of a specific set of independent variables”. Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants in these hotel focused studies are location, property characteristics, quality signaling factors, hotel amenities and services and external factors like the number of close competitors.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
 </div>
 <div id="airbnb-pricing" class="section level2">
 <h2>Airbnb pricing</h2>
@@ -402,21 +402,21 @@ $(document).ready(function () {
 </tbody>
 </table>
 <hr />
-<p>Based on hedonic pricing theory the hypothesis can me formulated as follows:</p>
-<p><em>Hypothesis 1:</em> The lesser the distance to the closest metro station, the higher the listing price.</p>
+<p>Based on hedonic pricing theory the hypothesis can be formulated as follows:</p>
+<p><em>Hypothesis 1:</em> The smaller the distance to the closest metro station, the higher the listing price.</p>
 <p><em>Hypothesis 2:</em> Instant Bookability and flexible cancellation rules are associated with higher listing prices.</p>
 <p><em>Hypothesis 3:</em> Higher average rating scores (index) are associated with higher listing prices.</p>
 <p><em>Hypothesis 4:</em> Superhost status is associated with higher prices</p>
-<p>Thus, out final regression equation looks like the following: <span class="math display">\[log(price_i) = \alpha + \delta D_i + \beta R_i + \gamma U_i + \tau P_i  + \epsilon_i \]</span> where <span class="math inline">\(price_i\)</span> reflects the individual price per night, <span class="math inline">\(\alpha\)</span> the intercept, the vector <span class="math inline">\(D\)</span> reflects the distance measures, the <span class="math inline">\(R\)</span> vector contains rental listing features and the vector <span class="math inline">\(U\)</span> is composed of rental rules and lastly <span class="math inline">\(P\)</span> describe reputational characteristics of the listing.</p>
+<p>Thus, our final regression equation looks like the following: <span class="math display">\[log(price_i) = \alpha + \delta D_i + \beta R_i + \gamma U_i + \tau P_i  + \epsilon_i \]</span> where <span class="math inline">\(price_i\)</span> reflects the individual price per night, <span class="math inline">\(\alpha\)</span> the intercept, the vector <span class="math inline">\(D\)</span> reflects the distance measures, the <span class="math inline">\(R\)</span> vector contains rental listing features and the vector <span class="math inline">\(U\)</span> is composed of rental rules and lastly <span class="math inline">\(P\)</span> describe reputational characteristics of the listing.</p>
 <div id="regression-diagnostic" class="section level3">
 <h3>Regression diagnostic</h3>
 <p>Recall that basic linear regression requires some assumptions in order to be valid: linearity (&amp; no influential outliers), homoscedasticity of variance, independence of the error term, little or no multicollinearity and normally distributed residuals.</p>
-<p>We checked for multicollinearity among the independent variables with the aid of the variance inflation factor (VIF) to avoid any undesired effects on the regression results and thus on our interpretation. While the VIF among the variables in any of the five models was below the threshold, a Breusch–Pagan test was assessed in order to detect heteroskedasticity. Unfortunately, in all five models we found heteroskedasticity. For this reason, we calculated robust standard errors using the <code>vcovHC()</code> function from the <code>sandwich</code> package. For more details on heteroskedasticity consistent estimators see <span class="citation">(<span class="citeproc-not-found" data-reference-id="zeileis2004econometric"><strong>???</strong></span>)</span>.</p>
+<p>We checked for multicollinearity among the independent variables with the aid of the variance inflation factor (VIF) to avoid any undesired effects on the regression results and thus on our interpretation. While the VIF among the variables in any of the five models was below the threshold, a Breusch–Pagan test was assessed in order to detect heteroskedasticity. Unfortunately, in all five models we found heteroskedasticity. For this reason, we calculated robust standard errors using the <code>vcovHC()</code> function from the <code>sandwich</code> package. For more details on heteroskedasticity consistent estimators see <span class="citation">Zeileis (2004)</span>.</p>
 </div>
 </div>
 <div id="regression" class="section level2">
 <h2>Regression</h2>
-<p>The usage of the log on our dependent variable is justified when we look at the following graphs. When the data is not normally distributed a non-linear transformation (e.g., log-transformation) might fix this issue. One can clearly see that the regression in the standard, no log form, is indeed not normally distributed. Thus, it is reasonable to adjust accordingly and use the log-form henceforth.</p>
+<p>The usage of the log on our dependent variable is justified when we look at the following graphs. When the data is not normally distributed a non-linear transformation (e.g., log-transformation) might fix this issue. In other words, a log transformation will make skewed distribution more normally distributed. One can clearly see that the regression in the standard, no log form, is indeed not normally distributed. Thus, it is reasonable to adjust accordingly and use the log-form henceforth.</p>
 <pre class="r"><code>mod_no_log &lt;- lm(price_dkk ~ distance + dist_centrum, data = airbnb_clean)
 plot_model(mod_no_log, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
 <p><img src="Regression_files/figure-html/regression%20diagnostic-1.png" width="672" /></p>
@@ -425,7 +425,7 @@ plot_model(mod_no_log, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
 mod1 &lt;- lm(log(price_dkk) ~ distance + dist_centrum, data = airbnb_clean)
 plot_model(mod1, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
 <p><img src="Regression_files/figure-html/regression%20diagnostic-2.png" width="672" /></p>
-<p>Now we can finally take a look at our whole regression model. We included the variables step by step in order to see how the coefficients change.</p>
+<p>Now we can finally take a look at our whole regression model. We included the variables step by step in order to see how the coefficients change. We start first with the estimates of the distance variables on the price. We keep these variables and regress them together with each other variable set separately (Property, Rules, Reputation). Finally, we will calculate the coefficients of regression of all explanatory variable against the dependent variable.</p>
 <table style="text-align:center">
 <caption>
 <strong>Linear Regression Model</strong>
@@ -452,10 +452,9 @@ plot_model(mod1, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
 <td style="text-align:left">
 </td>
 <td>
-LOG(PRICE_DKK)
+Log Price per night in DKK
 </td>
 <td colspan="4">
-PRICE_DKK %% LOG()
 </td>
 </tr>
 <tr>
@@ -2010,27 +2009,29 @@ Constant
 </div>
 <div id="limitations" class="section level2">
 <h2>Limitations</h2>
-<p>There are some limitations concerning the data used in the analysis. Although the provision of data from AirbnbInside.com is very useful, it is clear that there will be a difference between advertised listings and booked listings. The problem is that some of the advertised listings, which is the basis for the InsideAirbnb-dataset, are outdated or created by accident and are thus not booked. I tried to control for this by setting a minimum requirement concerning the number of reviews as well as the verification of the host as a necessary condition. “Scrapers that track updates to host calendars cannot distinguish real bookings from dates host block for other reasons.” <span class="citation">Coles et al. (2017)</span></p>
+<p>There are some limitations concerning the data used in the analysis. Although the provision of data from AirbnbInside.com is very useful, it is clear that there will be a difference between advertised listings and booked listings. The problem is that some of the advertised listings, which is the basis for the InsideAirbnb-dataset, are outdated or created by accident and are thus not booked. I tried to control for this by setting a minimum requirement concerning the number of reviews as well as the verification of the host as a necessary condition. “Scrapers that track updates to host calendars cannot distinguish real bookings from dates host block for other reasons.” <span class="citation">(Coles et al. 2017)</span></p>
 <p><span class="citation">Coles et al. (2017)</span> also point to the fact that there is a discrepancy between the price listed and the actual transaction price. The scraping method does not include any corrections for specific discounts, i.e. weekly discount.</p>
 <p>In addition to that, in a next analysis, a researcher could investigate the influence factor of a specific neighborhood on the price of the listing. It can be expected that the more known/appealing a neighborhood is, the more it will cost for both the host (rent) and the guest (listing price).</p>
 </div>
 <div id="final-findings-summarized" class="section level2">
 <h2>Final Findings Summarized:</h2>
 <ul>
-<li><p>Distance to the closest metro station does not affect the price of the rental. As a result, a potential accommodation should always include a short distance to the next metro station.</p></li>
+<li><p>Distance to the closest metro station does not affect the price of the rental. We can interpret this result from the lens of a visitor who is looking for a potential accommodation. The result suggest that, from a utility maximazing point of view, a visitor should always include a short distance to the next metro station into his personal search. It will not be to his or her disadvantage.</p></li>
 <li><p>Higher prices are associated with the number of bathrooms, how many people the listing can accommodate and the reputation of the listings displayed in its reviews.</p></li>
 <li><p>Cancellation policies are fairly spread out, but the analysis showed that the expected relationship cannot be detected in the data. It seems to have no effect on the price of the listing.</p></li>
-<li><p>Most top 5 words in description shows that more hosts talk about the surrounding area rather than the listing itself.</p></li>
-<li><p>However, the rental price is unaffected by the number of minimum nights and the possibility to book a listing instantly.</p></li>
+<li><p>However, there is no (significant) relationship between the rental price and the number of minimum nights or the possibility to book a listing instantly.</p></li>
 </ul>
-</div>
-<div id="final-recommendations" class="section level2">
-<h2>Final Recommendations</h2>
+<div id="recommendation" class="section level3">
+<h3>Recommendation</h3>
 <p><em>Which effect does the distance to the closest metro station have on the price of the accommodation?</em> The analysis showed that it the distance is not included in the price, yet. In my opinion it is a good thing that it is not reflected in the price. If we overlook the possibility of misspecification of the model, it hints at the fact that accoding to the hedonic price model hosts do not account for this characteristic in their pricing strategy - even though it provides additional value to the consumer. I would, therefore, encourage future visitors to check (Google-) the location of the AirBnB before booking. <em>If it rains</em> you will thank me for it.</p>
+</div>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2>References</h2>
 <div id="refs" class="references">
+<div id="ref-andersson2000hypothesis">
+<p>Andersson, David E. 2000. “Hypothesis Testing in Hedonic Price Estimation–On the Selection of Independent Variables.” <em>The Annals of Regional Science</em> 34 (2). Springer: 293–304.</p>
+</div>
 <div id="ref-coles2017airbnb">
 <p>Coles, Peter A, Michael Egesdal, Ingrid Gould Ellen, Xiaodi Li, and Arun Sundararajan. 2017. “Airbnb Usage Across New York City Neighborhoods: Geographic Patterns and Regulatory Implications.” <em>Forthcoming, Cambridge Handbook on the Law of the Sharing Economy</em>.</p>
 </div>
@@ -2042,6 +2043,9 @@ Constant
 </div>
 <div id="ref-wang2017price">
 <p>Wang, Dan, and Juan L Nicolau. 2017. “Price Determinants of Sharing Economy Based Accommodation Rental: A Study of Listings from 33 Cities on Airbnb. Com.” <em>International Journal of Hospitality Management</em> 62. Elsevier: 120–31.</p>
+</div>
+<div id="ref-zeileis2004econometric">
+<p>Zeileis, Achim. 2004. “Econometric Computing with Hc and Hac Covariance Matrix Estimators.” Institut für Statistik und Mathematik, WU Vienna University of Economics and ….</p>
 </div>
 </div>
 </div>

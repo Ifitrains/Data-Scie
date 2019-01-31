@@ -63,7 +63,7 @@ kable_data(airbnb[1:7,25:48])
 From columns 25 to 48 we will keep the following:
 
  * **host_is_superhost**: categorical t or f - describing highly trustworthy hosts ("Superhosts are experienced hosts who provide a shining example for other hosts, and extraordinary experiences for their guests." <https://www.airbnb.com/help/article/828/what-is-a-superhost?locale=en>) they have hosted at least 10 trips; maintained 90% response rate or higher; received a 5-star review at least 80% of the time
-they have been reviewed; completed each of their confirmed reservations without canceling (@wang2017price)
+they have been reviewed; completed each of their confirmed reservations without canceling [@wang2017price]
  * **host_has_profile_pic**: categorical t or f - can increase credibility.
  * **host_identity_verified**: categorical t or f - can also increase credibility.
  * **neighborhood**: The corresponding neighborhood, however, it should be taken with caution.

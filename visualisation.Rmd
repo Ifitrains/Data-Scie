@@ -177,7 +177,7 @@ price_privat
 
 
 
-density_plot <- ggplot(airbnb_clean, aes(x = log(airbnb_clean$price_dkk), color = rtype)) + geom_density(aes(fill = rtype, alpha = 0.5)) + 
+density_plot <- ggplot(airbnb_clean, aes(x = log(airbnb_clean$price_dkk), color = rtype)) + geom_density(aes(fill = rtype), alpha = 0.5) + 
   labs(x = "Nightly Rental Price (Log)", y = "Density", 
        title = "Price Density by Accommodation Type") + 
   theme_ipsum() +
@@ -206,7 +206,7 @@ airbnb_clean$distance <- AirBnBCopenhagen::distance(airbnb_clean$longitude, airb
 
 
 plot_distance <- ggplot(airbnb_clean, aes(x= distance, y= log(price_dkk)))+ 
-  geom_point()+
+  geom_point(alpha = 0.5)+
   geom_smooth(method = "lm")+
   labs(x = "Distance to the next Metro station (in meters)", 
        y = "Nightly Rental Price (Log)", 
@@ -224,7 +224,7 @@ airbnb_clean$dist_centrum <- AirBnBCopenhagen::distance(airbnb_clean$longitude, 
          nyhavn_lng, nyhavn_lat)
 
 plot_distance_c <- ggplot(airbnb_clean, aes(x= dist_centrum, y= log(price_dkk)))+ 
-  geom_point()+
+  geom_point(aplpha = 0.5)+
   geom_smooth(method = "lm")+
   labs(x = "Distance to Nyhavn, City Center", 
        y = "Nightly Rental Price (Log)", 
