@@ -1,0 +1,11 @@
+---
+title: "About This Website"
+---
+
+- __Name:__ Julian Kohlruss
+- __Occupation:__ Bachelor Student
+- __Purpose of this Website:__ Advanced Data Science Project 
+- __Immatriculation number:__ 15202331
+- __Supervisor:__ David Zimmermann
+
+***

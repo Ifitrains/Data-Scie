@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Source Code</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">AirBnB Copenhagen</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="Introduction.html">
+    <span class="fa fa-map"></span>
+     
+    Introduction
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-broom"></span>
+     
+    Descriptive Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Descriptive_Analysis.html">Tidy Data</a>
+    </li>
+    <li>
+      <a href="visualisation.html">Visualisation</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Regression.html">
+    <span class="fa fa-chart-line"></span>
+     
+    Regression Analysis
+  </a>
+</li>
+<li>
+  <a href="code.html">
+    <span class="fa fa-code"></span>
+     
+    The full code
+  </a>
+</li>
+<li>
+  <a href="about.html">
+    <span class="fa fa-user-graduate"></span>
+     
+    About Me
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:j.kohlruss@zeppelin-university.net">
+    <span class="fa fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Source Code</h1>
+
+</div>
+
+
+<div id="load-packages-in-rrstudio" class="section level3">
+<h3>Load Packages in R/RStudio</h3>
+<p>I used a collection of R packages designed for data science, in particular the following:</p>
+<pre class="r"><code>if(!require(&quot;tidyverse&quot;)){
+  
+  # If the package is not already installed, it will be installed
+  install.packages(&quot;tidyverse&quot;, dependencies = TRUE)
+  
+  # We load the package using libary
+  library(&quot;tidyverse&quot;)
+}
+
+library(magrittr)
+library(car)
+library(ggplot2)
+library(stargazer)
+library(dplyr)
+library(foreign)</code></pre>
+<p>Of course, I used more than the seven, but I will always mention them at the points where I needed them.</p>
+</div>
+<div id="data-import" class="section level2">
+<h2>Data Import</h2>
+<pre class="r"><code>airbnb &lt;- read_csv(&quot;data/listings.csv&quot;)</code></pre>
+<p>You can glimpse (using the pipe <code>%&gt;%</code> operator), or look at head and tail of the data:</p>
+<pre class="r"><code>airbnb %&gt;% glimpse()
+head(airbnb)
+tail(airbnb)</code></pre>
+</div>
+<div id="clean-data" class="section level2">
+<h2>Clean Data</h2>
+<p>With the help of the <code>kableExtra</code> package, we can easily and nicely visualize our data. With the subscript [] we can address the data gradually.</p>
+<pre class="r"><code>library(magrittr)
+library(kableExtra)
+kable(airbnb[1:7,1:24]) %&gt;% # [1:7,1:24] = first seven rows and first 24 columns
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;), 
+  full_width = F, font_size = 10) %&gt;%
+  scroll_box(width = &quot;910px&quot;, height = &quot;400px&quot;)</code></pre>
+<p>After we saw all variables with the kable-table, we can select and subset the data to a dataframe that consists only of the variables of interest.</p>
+<pre class="r"><code>airbnb_data &lt;- airbnb %&gt;% select(id, last_scraped, description, host_id, host_is_superhost,
+                                 host_has_profile_pic, host_identity_verified, neighbourhood,
+                                 neighbourhood_cleansed, latitude, longitude, property_type, room_type, 
+                                 accommodates, bathrooms, bedrooms, beds, price, security_deposit,
+                                 cleaning_fee, guests_included, extra_people, minimum_nights,
+                                 number_of_reviews, first_review, last_review, review_scores_rating,
+                                 review_scores_accuracy, review_scores_cleanliness, review_scores_checkin,
+                                 review_scores_communication, review_scores_location, review_scores_value,
+                                 instant_bookable, cancellation_policy, calculated_host_listings_count,
+                                 reviews_per_month)</code></pre>
+<p>Now the cleaning process begins.</p>
+<pre class="r"><code># Necessary condition: host must be verified and listins must have at least one review
+airbnb_clean &lt;-  airbnb_data %&gt;% 
+  filter(host_identity_verified == &quot;TRUE&quot; &amp; number_of_reviews &gt; 0)
+
+# Cleaning or variables containing prices
+
+airbnb_clean &lt;- airbnb_clean %&gt;% 
+  mutate(cleaning_fee_dkk = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, airbnb_clean$cleaning_fee))) %&gt;% 
+  mutate(price_dkk = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, airbnb_clean$price))) %&gt;% 
+  mutate(extra_people_dkk = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, airbnb_clean$extra_people))) %&gt;% 
+  mutate(security_deposit_dkk = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, airbnb_clean$security_deposit))) %&gt;% 
+  filter(price_dkk &gt; 0 &amp; price_dkk &lt; 17500)
+
+# first dummies
+
+airbnb_clean &lt;- airbnb_clean %&gt;% mutate(
+  superhost = case_when(
+    host_is_superhost == &quot;TRUE&quot; ~ 1,
+    host_is_superhost == &quot;FALSE&quot; ~ 0
+  ),
+  instant = case_when(
+    instant_bookable == &quot;TRUE&quot; ~ 1,
+    instant_bookable == &quot;FALSE&quot; ~ 0
+  )
+)
+
+# Clean property type 
+
+airbnb_clean$property_type  &lt;- airbnb_clean$property_type %&gt;%  
+  str_replace(., &quot; \\&amp; &quot;, &quot;_&quot;) %&gt;% 
+  str_replace(., &quot;\\/&quot;, &quot;_&quot;) %&gt;% 
+  as_factor() 
+
+# two new variables 
+
+airbnb_clean &lt;- airbnb_clean %&gt;% mutate(
+  listing_duration = as.numeric(difftime(airbnb_clean$last_scraped, airbnb_clean$first_review, unit = &quot;days&quot;)),
+  price_person = price_dkk/accommodates)
+
+# Deleting Shared Rooms and creating two dummies and an index
+airbnb_clean &lt;- airbnb_clean %&gt;% mutate(
+   rtype = case_when(
+    room_type == &quot;Shared room&quot; ~ NA_character_,
+    room_type == &quot;Entire home/apt&quot; ~ &quot;Entire Apartment&quot;,
+    room_type == &quot;Private room&quot; ~ &quot;Private&quot;
+    ),
+  home = case_when(
+    room_type == &quot;Shared room&quot; ~ NA_real_, # drop Shared Rooms
+    room_type == &quot;Entire home/apt&quot; ~ 1,
+    room_type == &quot;Private room&quot; ~ 0
+  ),
+strict_cancel = case_when(
+  cancellation_policy == &quot;strict_14_with_grace_period&quot; ~ 1,
+  cancellation_policy == &quot;moderate&quot; ~ 0,
+  cancellation_policy == &quot;flexible&quot; ~ 0
+),
+index = ((airbnb_clean$review_scores_accuracy + airbnb_clean$review_scores_cleanliness
+                        + airbnb_clean$review_scores_checkin +airbnb_clean$review_scores_communication
+                        + airbnb_clean$review_scores_location + airbnb_clean$review_scores_value)/6)) %&gt;% 
+  filter(!is.na(rtype))</code></pre>
+<p>Scraping of metro data using the <code>rvest</code> and <code>purrr</code> package</p>
+<pre class="r"><code>library(rvest) 
+metroURL &lt;- &quot;https://en.wikipedia.org/wiki/List_of_Copenhagen_Metro_stations&quot;
+metro_scrap &lt;- metroURL %&gt;% 
+  read_html %&gt;%
+  html_nodes(xpath=&#39;//th&#39;) %&gt;% html_nodes(&quot;a&quot;) %&gt;% html_attr(&quot;href&quot;) %&gt;% na.omit() %&gt;% 
+  paste0(&quot;https://en.wikipedia.org&quot;, .) #create link, we only need first 22 lists
+
+# Using purrr instead of for-loops
+library(purrr)
+# Extract the geo locations and names of the metro stations
+names &lt;- map_df(metro_scrap[1:22], ~ tibble(names = read_html(.) %&gt;% html_nodes(&quot;#firstHeading&quot;) %&gt;% html_text())) %&gt;% 
+  distinct()
+geo &lt;- map_df(metro_scrap[1:22], ~ tibble(coor = read_html(.) %&gt;% html_nodes(&quot;.geo&quot;) %&gt;% html_text())) %&gt;% 
+  distinct()
+
+# A function as a workaround of untidy geo dataframe
+Numextract_coord &lt;- function(string){
+  as.data.frame(as.numeric(unlist(regmatches(string, gregexpr(&quot;[[:digit:]]+\\.*[[:digit:]]*&quot;, string)))))
+}
+
+df &lt;- Numextract_coord(geo$coor)
+lng &lt;- df %&gt;% dplyr::filter(row_number() %% 2 == 0) ## Select even rows
+lat &lt;- df %&gt;% dplyr::filter(row_number() %% 2 == 1) ## Select odd rows
+
+metro_df &lt;- cbind(names, lat,lng)
+colnames(metro_df) &lt;- c(&quot;metro&quot;,&quot;lat&quot;, &quot;long&quot;)</code></pre>
+<p>Visualisations with<code>plotly</code></p>
+<pre class="r"><code>library(plotly)
+library(viridis)
+library(hrbrthemes)
+# # using plotly 
+f &lt;- list(
+  family = &quot;Viridis 20&quot;,
+  size = 18,
+  color = &quot;#440154FF&quot;
+)
+x &lt;- list(
+  title = &quot;Copenhagen Neigbourhoods&quot;,
+  titlefont = f
+)
+y &lt;- list(
+  title = &quot;Number of Listings&quot;,
+  titlefont = f
+)
+
+room_neigh &lt;- airbnb_clean %&gt;%
+  filter(!is.na(neighbourhood)) %&gt;% 
+  group_by(neighbourhood) %&gt;% 
+  dplyr::count(room_type) 
+
+room_neigh %&gt;%
+  plot_ly(type = &quot;bar&quot;,
+          x = ~neighbourhood,
+          y = ~n,
+          color = ~room_type,
+          colors = viridis_pal(option = &quot;D&quot;)(3)) %&gt;% 
+  layout(title = &quot;AirBnB listings sorted after type and neighbourhood&quot;,
+         xaxis = x, yaxis = y)
+  # only 17 shared room&#39;s listed in the data
+# Entire home = 6318
+# private room = 1199</code></pre>
+<p>Histograms and density plot of night price distributions.</p>
+<pre class="r"><code>price_apart &lt;- airbnb_clean %&gt;%
+  filter(price_dkk&lt;2100 &amp; room_type == &quot;Entire home/apt&quot;) %&gt;%
+  ggplot(aes(x=price_dkk)) +
+  stat_bin(breaks=seq(0,2100,50), fill=&quot;#69b3a2&quot;, color=&quot;#e9ecef&quot;, alpha=0.9) +
+  ggtitle(&quot;Night price distribution of Airbnb appartements&quot;) +
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = &quot;gray90&quot;) +
+  theme(plot.title = element_text(size=12)) +
+  labs(x=&quot;Price in DKK (Danish krone)&quot;,
+       caption=&quot;&quot;)
+
+
+price_privat &lt;- airbnb_clean %&gt;%
+  filter(price_dkk&lt;2100 &amp; room_type == &quot;Private room&quot;) %&gt;%
+  ggplot(aes(x=price_dkk)) +
+  stat_bin(breaks=seq(0,2100,50), fill=&quot;#74add1&quot;, color=&quot;#e9ecef&quot;, alpha=0.9) +
+  ggtitle(&quot;Night price distribution of Airbnb private rooms&quot;) +
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = &quot;gray90&quot;) +
+  theme(plot.title = element_text(size=12)) +
+  labs(x=&quot;Price in DKK (Danish krone)&quot;,
+       caption=&quot;1 Euro = 7.4 DKK &quot;)
+
+density_plot &lt;- ggplot(airbnb_clean, aes(x = log(airbnb_clean$price_dkk), 
+                                         color = rtype)) + 
+  geom_density(aes(fill = rtype, alpha = 0.5)) + 
+  labs(x = &quot;Nightly Rental Price (Log)&quot;, y = &quot;Density&quot;, 
+       title = &quot;Price Density by Accommodation Type&quot;) + 
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = &quot;gray90&quot;)+
+  theme(plot.title = element_text(size=12),
+        legend.title = element_blank())</code></pre>
+<p>Calculate the distance between listings and nearest metro station as well as distance between listing and the city center. I wrote an <code>AirBnBCopenhagen</code> package in order to simply especially the distance function.</p>
+<pre class="r"><code>library(AirBnBCopenhagen)
+library(rvest)
+library(geosphere)
+metroURL &lt;- &quot;https://en.wikipedia.org/wiki/List_of_Copenhagen_Metro_stations&quot;
+metro_df &lt;- geo_metro(metroURL)
+
+airbnb_clean$distance &lt;- AirBnBCopenhagen::distance(airbnb_clean$longitude,
+                                                    airbnb_clean$latitude,
+                                                    metro_df$long,
+                                                    metro_df$lat)
+
+
+plot_distance &lt;- ggplot(airbnb_clean, aes(x= distance, y= log(price_dkk))) + 
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;) +
+  labs(x = &quot;Distance to the next Metro station (in meters)&quot;, 
+       y = &quot;Nightly Rental Price (Log)&quot;, 
+       title = &quot;Price vs. Distance to the next metro&quot;) + 
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = &quot;gray90&quot;) +
+  theme(plot.title = element_text(size=12),
+        legend.title = element_blank())
+
+# Distance to city center: nyhavn: 12.590659, 55.679687
+nyhavn_lng &lt;- 12.590659
+nyhavn_lat &lt;- 55.679687
+airbnb_clean$dist_centrum &lt;- AirBnBCopenhagen::distance(airbnb_clean$longitude,
+                                                        airbnb_clean$latitude,
+                                                        nyhavn_lng, nyhavn_lat)
+
+plot_distance_c &lt;- ggplot(airbnb_clean, aes(x= dist_centrum, y= log(price_dkk))) + 
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;) +
+  labs(x = &quot;Distance to Nyhavn, City Center&quot;, 
+       y = &quot;Nightly Rental Price (Log)&quot;, 
+       title = &quot;Price vs. Distance to the City Center&quot;) + 
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = &quot;gray90&quot;) +
+  theme(plot.title = element_text(size=12),
+        legend.title = element_blank())</code></pre>
+<p>Now we turn to mapping them in an interactive map using the <code>leaflet</code> package.</p>
+<pre class="r"><code># leaflet package for R
+library(leaflet)
+library(maps)
+library(rgdal)
+library(leaflet.extras)
+
+# Create CPH Long Lat
+m &lt;- leaflet() %&gt;% setView(lng = 12.568337, 
+                           lat = 55.676098, 
+                           zoom = 12) # Copenhagens longitude and latitude
+
+
+# For the pop up
+nyhavn &lt;- paste(sep = &quot;&lt;br/&gt;&quot;,
+                #paste0(&quot;&lt;img src=&#39;https://en.wikipedia.org/wiki/Nyhavn#/media/File:Nyhavn_MichaD.jpg&quot;, &quot;&#39; /&gt;&quot;),
+                paste0(&quot;&lt;b&gt;Name: &lt;/b&gt;&quot;, &quot;Nyhavn&quot;),
+                paste0(&quot;&lt;b&gt;Place: &lt;/b&gt;&quot;, &quot;City Center, Copenhagen&quot;),
+                paste0(&quot;&lt;a href=&#39;https://en.wikipedia.org/wiki/Nyhavn&quot;, 
+                       ... =   &quot;&#39;&gt;Link&lt;/a&gt;&quot;))
+
+map_nyhavn &lt;- m %&gt;% 
+  addProviderTiles(&quot;Esri.WorldImagery&quot;, group=&quot;Background 1&quot;) %&gt;%
+  addTiles(options = providerTileOptions(noWrap = TRUE), group=&quot;Background 2&quot;) %&gt;%
+  addCircles(data=metro_df, lng = ~long, lat = ~lat,popup = ~metro,
+             fillColor=&quot;red&quot;, stroke = TRUE, fillOpacity = 0.8 , 
+             radius = 80, group=&quot;Metro Stations&quot;) %&gt;% 
+  addCircleMarkers(data = airbnb_clean, lng = ~ longitude, lat = ~ latitude, 
+                   radius = 1 , color=&quot;black&quot;,
+                   fillColor = &quot;#ffa500&quot;, stroke = TRUE, fillOpacity = 2, 
+                   group=&quot;AirBnB Listings&quot;,
+                   clusterOptions = markerClusterOptions()) %&gt;%
+  addLayersControl(overlayGroups = c(&quot;Metro Stations&quot;,&quot;AirBnB Listings&quot;) , 
+                   baseGroups = c(&quot;Background 1&quot;,&quot;Background 2&quot;),
+                   options = layersControlOptions(collapsed = FALSE))%&gt;%
+  suspendScroll()
+
+
+map_nyhavn %&gt;% addMarkers(lat =55.679687, lng = 12.590659, popup=nyhavn)</code></pre>
+<p>The Neighbourhoods GEOJSON file which is also downloaded from InsideAirBnB.com provides geocoordinates of neighbourhoods of Copenhagen.</p>
+<pre class="r"><code>library(geojson)
+library(jsonlite)
+library(geojsonio)
+nb_geo &lt;- geojson_read(&quot;data/neighbourhoods.geojson&quot;, what = &#39;sp&#39;)
+
+borough_data &lt;- airbnb_clean %&gt;%
+  group_by(neighbourhood_cleansed) %&gt;% 
+  nest() %&gt;% 
+  mutate(center_lon = map_dbl(data, ~median(.$longitude)),
+         center_lat = map_dbl(data, ~median(.$latitude)),
+         number_listings = map_int(data, nrow))
+
+map_poly &lt;- m %&gt;% 
+  addProviderTiles(&quot;Esri.WorldImagery&quot;,
+                   group=&quot;Background 1&quot;) %&gt;%
+  addTiles(options = providerTileOptions(noWrap = TRUE), 
+           group=&quot;Background 2&quot;) %&gt;%
+  addCircleMarkers(data=airbnb_clean, lng = ~ longitude,
+                 lat = ~ latitude, radius=1 , color=&quot;black&quot;,
+                 fillColor=&quot;#ffa500&quot;, stroke = TRUE, 
+                 fillOpacity = 2, group=&quot;AirBnB Listings&quot;,
+                 clusterOptions = markerClusterOptions()) %&gt;%
+  addPolygons(data = nb_geo, color = &quot;#444444&quot;, weight = 2,
+              opacity = 1, group = &quot;Polygon&quot;) %&gt;% 
+  addLayersControl(overlayGroups = c(&quot;AirBnB Listings&quot;, &quot;Polygon&quot;, &quot;neighbourhood&quot;),
+                   baseGroups = c(&quot;Background 1&quot;,&quot;Background 2&quot;),
+                   options = layersControlOptions(collapsed = FALSE)) %&gt;%
+  addLabelOnlyMarkers(data = borough_data,
+                    lng = ~center_lon, lat = ~center_lat,
+                    label = ~neighbourhood_cleansed,
+                    labelOptions = labelOptions(noHide = TRUE, 
+                                                direction = &#39;top&#39;, 
+                                                textOnly = TRUE,  
+                                                opacity = 1,
+                                                group = &quot;neighbourhood&quot;)) %&gt;% 
+  suspendScroll()</code></pre>
+<p>Regression Analysis</p>
+<pre class="r"><code>set.seed(123)
+library(sjPlot)
+library(stargazer)
+cph_data &lt;- airbnb_clean[,c(&quot;price_dkk&quot;,&quot;index&quot;,&quot;strict_cancel&quot;,
+                            &quot;home&quot;,&quot;cleaning_fee_dkk&quot;,&quot;superhost&quot;, 
+                            &quot;listing_duration&quot;, &quot;instant&quot;,
+                            &quot;security_deposit_dkk&quot;,
+                            &quot;accommodates&quot;,&quot;minimum_nights&quot; ,
+                            &quot;bathrooms&quot;, &quot;distance&quot;, &quot;dist_centrum&quot;)] %&gt;% na.omit()
+
+# Correlation Matrix
+res &lt;- cor(cph_data)
+round(res, 2)
+
+# Linear Regression model where dependent variable is in level-form
+mod_no_log &lt;- lm(price_dkk ~ distance + dist_centrum, data = airbnb_clean)
+plot_mod_no_log &lt;- plot_model(mod_no_log, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
+<p><img src="code_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># Thus we take the log
+
+mod1 &lt;- lm(log(price_dkk) ~ distance + dist_centrum,data = airbnb_clean)
+plot_mod1 &lt;- plot_model(mod1, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
+<p><img src="code_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r"><code>summary(mod1)
+
+mod2 &lt;- lm(log(price_dkk) ~ distance + dist_centrum+
+             home+ accommodates + bathrooms 
+             ,data = airbnb_clean)
+summary(mod2)
+plot_mod2 &lt;-plot_model(mod2, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
+<p><img src="code_files/figure-html/unnamed-chunk-5-3.png" width="672" /></p>
+<pre class="r"><code>mod3 &lt;- lm(log(price_dkk) ~  distance + dist_centrum 
+           +home+ accommodates + bathrooms+
+             strict_cancel+ instant+ minimum_nights+cleaning_fee_dkk, 
+           data = cph_data)
+summary(mod3)
+plot_mod3 &lt;- plot_model(mod3, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
+<p><img src="code_files/figure-html/unnamed-chunk-5-4.png" width="672" /></p>
+<pre class="r"><code>mod4 &lt;- lm(log(price_dkk) ~  distance + dist_centrum +
+           home+ accommodates + bathrooms+
+             strict_cancel + instant + minimum_nights+cleaning_fee_dkk + 
+             index + superhost +
+             listing_duration,
+           data = cph_data)
+summary(mod4)
+plot_mod4 &lt;-plot_model(mod4, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
+<p><img src="code_files/figure-html/unnamed-chunk-5-5.png" width="672" /></p>
+<pre class="r"><code># Regressiondiagnostic
+library(lmtest)
+library(sandwich)
+
+coeftest(mod4, vcov = vcovHC(mod4))
+
+bptest(mod4)
+
+# This test shows that we can reject the null that the variance of the residuals is constant, thus heteroskedacity is present.
+# To get the correct standard errors, we can use the 
+
+coeftest(mod4, vcov = vcovHC(mod4))
+
+# Final stargazer output
+stargazer(mod1, mod2, mod3, mod4, 
+          type = &quot;html&quot;, 
+          title = &quot;Linear Regression Model&quot;,  
+          style = &quot;ajs&quot;,  
+          summary = NULL,  
+          out.header = FALSE,
+          column.labels = c(&quot;Model 1&quot;, &quot;Model 2&quot;, &quot;Model 3&quot;, &quot;Model 4&quot;), 
+          column.separate = c(1,1), 
+          covariate.labels = c(&quot;Distance Metro&quot;,  
+                               &quot;Distance Centre (Proxy)&quot;,
+                               &quot;Apartment (Dummy)&quot;,
+                               &quot;Accomodates&quot;,
+                               &quot;Number of Bathrooms&quot;,
+                               &quot;Strict Cancel&quot;,
+                               &quot;Instant Booking&quot;,
+                               &quot;Minimum nights&quot;,
+                               &quot;Cleaning Fee&quot;,
+                               &quot;Review Index&quot;,
+                               &quot;Superhost&quot;,
+                               &quot;Listings duration&quot;),
+          dep.var.caption = &quot;Dep. Var&quot;,
+          star.cutoffs = c(0.05,0.01,0.001),
+          dep.var.labels = c(&quot;Log Price per night in DKK&quot;))</code></pre>
+<div id="session-info" class="section level3">
+<h3>Session Info</h3>
+<p>This shows the version of R I am using as well as all of the packages.</p>
+<pre class="r"><code># library(help = &quot;AirBnBCopenhagen&quot;)
+
+devtools::session_info()</code></pre>
+<pre><code>## - Session info ----------------------------------------------------------
+##  setting  value                       
+##  version  R version 3.5.0 (2018-04-23)
+##  os       Windows 10 x64              
+##  system   x86_64, mingw32             
+##  ui       RTerm                       
+##  language (EN)                        
+##  collate  German_Germany.1252         
+##  ctype    German_Germany.1252         
+##  tz       Europe/Berlin               
+##  date     2019-01-31                  
+## 
+## - Packages --------------------------------------------------------------
+##  ! package          * version date       lib
+##    abind              1.4-5   2016-07-21 [1]
+##    AirBnBCopenhagen * 1.13.1  2019-01-31 [1]
+##    assertthat         0.2.0   2017-04-11 [1]
+##    backports          1.1.3   2018-12-14 [1]
+##    bayesplot          1.6.0   2018-08-02 [1]
+##    bindr              0.1.1   2018-03-13 [1]
+##    bindrcpp         * 0.2.2   2018-03-29 [1]
+##    broom              0.5.1   2018-12-05 [1]
+##    callr              3.1.1   2018-12-21 [1]
+##    car              * 3.0-2   2018-08-23 [1]
+##    carData          * 3.0-2   2018-09-30 [1]
+##    cellranger         1.1.0   2016-07-27 [1]
+##    class              7.3-14  2015-08-30 [2]
+##    classInt           0.3-1   2018-12-18 [1]
+##    cli                1.0.1   2018-09-25 [1]
+##    coda               0.19-2  2018-10-08 [1]
+##    codetools          0.2-15  2016-10-05 [2]
+##    coin               1.2-2   2017-11-28 [1]
+##    colorspace         1.4-0   2019-01-13 [1]
+##    crayon             1.3.4   2017-09-16 [1]
+##    crosstalk          1.0.0   2016-12-21 [1]
+##    curl               3.3     2019-01-10 [1]
+##    data.table         1.12.0  2019-01-13 [1]
+##    DBI                1.0.0   2018-05-02 [1]
+##    desc               1.2.0   2018-05-01 [1]
+##    devtools           2.0.1   2018-10-26 [1]
+##    digest             0.6.18  2018-10-10 [1]
+##    dplyr            * 0.7.8   2018-11-10 [1]
+##    e1071              1.7-0   2018-07-28 [1]
+##    emmeans            1.3.1   2018-12-13 [1]
+##    estimability       1.3     2018-02-11 [1]
+##    evaluate           0.12    2018-10-09 [1]
+##    extrafont          0.17    2014-12-08 [1]
+##    extrafontdb        1.0     2012-06-11 [1]
+##    fansi              0.4.0   2018-10-05 [1]
+##    forcats          * 0.3.0   2018-02-19 [1]
+##    foreign          * 0.8-71  2018-07-20 [1]
+##    fs                 1.2.6   2018-08-23 [1]
+##    gdtools            0.1.7   2018-02-27 [1]
+##    generics           0.0.2   2018-11-29 [1]
+##    geojson          * 0.3.0   2019-01-18 [1]
+##    geojsonio        * 0.6.0   2018-03-30 [1]
+##    geosphere        * 1.5-7   2017-11-05 [1]
+##    ggeffects          0.8.0   2019-01-09 [1]
+##    ggplot2          * 3.1.0   2018-10-25 [1]
+##    ggridges           0.5.1   2018-09-27 [1]
+##    glmmTMB            0.2.3   2019-01-11 [1]
+##    glue               1.3.0   2018-07-17 [1]
+##    gridExtra          2.3     2017-09-09 [1]
+##    gtable             0.2.0   2016-02-26 [1]
+##    haven              2.0.0   2018-11-22 [1]
+##    highr              0.7     2018-06-09 [1]
+##    hms                0.4.2   2018-03-10 [1]
+##    hrbrthemes       * 0.6.0   2019-01-21 [1]
+##    htmltools          0.3.6   2017-04-28 [1]
+##    htmlwidgets        1.3     2018-09-30 [1]
+##    httpuv             1.4.5.1 2018-12-18 [1]
+##    httr               1.4.0   2018-12-11 [1]
+##    jqr                1.1.0   2018-10-22 [1]
+##    jsonlite         * 1.6     2018-12-07 [1]
+##    kableExtra       * 1.0.0   2019-01-16 [1]
+##    knitr              1.21    2018-12-10 [1]
+##    labeling           0.3     2014-08-23 [1]
+##    later              0.7.5   2018-09-18 [1]
+##    lattice            0.20-35 2017-03-25 [2]
+##    lazyeval           0.2.1   2017-10-29 [1]
+##    leaflet          * 2.0.2   2018-11-12 [1]
+##    leaflet.extras   * 1.0.0   2019-01-26 [1]
+##    lme4               1.1-19  2018-11-10 [1]
+##    lmtest           * 0.9-36  2018-04-04 [1]
+##    lubridate          1.7.4   2018-04-11 [1]
+##    magrittr         * 1.5     2014-11-22 [1]
+##    maps             * 3.3.0   2018-04-03 [1]
+##    maptools           0.9-4   2018-09-19 [1]
+##    markdown           0.9     2018-12-07 [1]
+##    MASS               7.3-49  2018-02-23 [2]
+##    Matrix             1.2-14  2018-04-13 [2]
+##    matrixStats        0.54.0  2018-07-23 [1]
+##    memoise            1.1.0   2017-04-21 [1]
+##    mime               0.6     2018-10-05 [1]
+##    minqa              1.2.4   2014-10-09 [1]
+##    mnormt             1.5-5   2016-10-15 [1]
+##    modelr             0.1.2   2018-05-11 [1]
+##    modeltools         0.2-22  2018-07-16 [1]
+##    multcomp           1.4-8   2017-11-08 [1]
+##    munsell            0.5.0   2018-06-12 [1]
+##    mvtnorm            1.0-8   2018-05-31 [1]
+##    nlme               3.1-137 2018-04-07 [1]
+##    nloptr             1.2.1   2018-10-03 [1]
+##    openxlsx           4.1.0   2018-05-26 [1]
+##    pillar             1.3.1   2018-12-15 [1]
+##    pkgbuild           1.0.2   2018-10-16 [1]
+##    pkgconfig          2.0.2   2018-08-16 [1]
+##    pkgload            1.0.2   2018-10-29 [1]
+##    plotly           * 4.8.0   2018-07-20 [1]
+##    plyr               1.8.4   2016-06-08 [1]
+##    prediction         0.3.6.1 2018-12-04 [1]
+##    prettyunits        1.0.2   2015-07-13 [1]
+##    processx           3.2.1   2018-12-05 [1]
+##    promises           1.0.1   2018-04-13 [1]
+##    ps                 1.3.0   2018-12-21 [1]
+##    psych              1.8.12  2019-01-12 [1]
+##    purrr            * 0.2.5   2018-05-29 [1]
+##    pwr                1.2-2   2018-03-03 [1]
+##    R6                 2.3.0   2018-10-04 [1]
+##    RColorBrewer       1.1-2   2014-12-07 [1]
+##    Rcpp               1.0.0   2018-11-07 [1]
+##    readr            * 1.3.1   2018-12-21 [1]
+##    readxl             1.2.0   2018-12-19 [1]
+##    remotes            2.0.2   2018-10-30 [1]
+##    rgdal            * 1.3-6   2018-10-16 [1]
+##    rgeos              0.4-2   2018-11-08 [1]
+##    rio                0.5.16  2018-11-26 [1]
+##    rlang              0.3.1   2019-01-08 [1]
+##    rmarkdown          1.11    2018-12-08 [1]
+##    rprojroot          1.3-2   2018-01-03 [1]
+##    rstudioapi         0.9.0   2019-01-09 [1]
+##    Rttf2pt1           1.3.7   2018-06-29 [1]
+##    rvest            * 0.3.2   2016-06-17 [1]
+##    sandwich         * 2.5-0   2018-08-17 [1]
+##    scales             1.0.0   2018-08-09 [1]
+##    selectr            0.4-1   2018-04-06 [1]
+##    sessioninfo        1.1.1   2018-11-05 [1]
+##    sf                 0.7-2   2018-12-20 [1]
+##    shiny              1.2.0   2018-11-02 [1]
+##    sjlabelled         1.0.16  2019-01-10 [1]
+##    sjmisc             2.7.7   2019-01-02 [1]
+##    sjPlot           * 2.6.2   2018-12-18 [1]
+##    sjstats            0.17.3  2019-01-07 [1]
+##    snakecase          0.9.2   2018-08-14 [1]
+##    sp               * 1.3-1   2018-06-05 [1]
+##    stargazer        * 5.2.2   2018-05-30 [1]
+##    stringdist         0.9.5.1 2018-06-08 [1]
+##    stringi            1.2.4   2018-07-20 [1]
+##    stringr          * 1.3.1   2018-05-10 [1]
+##    survival           2.41-3  2017-04-04 [2]
+##    testthat           2.0.1   2018-10-13 [1]
+##    TH.data            1.0-9   2018-07-10 [1]
+##    tibble           * 2.0.1   2019-01-12 [1]
+##    tidyr            * 0.8.2   2018-10-28 [1]
+##    tidyselect         0.2.5   2018-10-11 [1]
+##    tidyverse        * 1.2.1   2017-11-14 [1]
+##  D TMB                1.7.15  2018-11-09 [1]
+##    units              0.6-2   2018-12-05 [1]
+##    usethis            1.4.0   2018-08-14 [1]
+##    utf8               1.1.4   2018-05-24 [1]
+##    V8                 1.5     2017-04-25 [1]
+##    viridis          * 0.5.1   2018-03-29 [1]
+##    viridisLite      * 0.3.0   2018-02-01 [1]
+##    webshot            0.5.1   2018-09-28 [1]
+##    withr              2.1.2   2018-03-15 [1]
+##    xfun               0.4     2018-10-23 [1]
+##    xml2             * 1.2.0   2018-01-24 [1]
+##    xtable             1.8-3   2018-08-29 [1]
+##    yaml               2.1.19  2018-05-01 [1]
+##    zip                1.0.0   2017-04-25 [1]
+##    zoo              * 1.8-4   2018-09-19 [1]
+##  source                                   
+##  CRAN (R 3.5.0)                           
+##  local                                    
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  Github (cran/colorspace@74fa33f)         
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  Github (rstudio/leaflet@e780e4b)         
+##  Github (bhaskarvk/leaflet.extras@503f7ef)
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.2)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.0)                           
+##  CRAN (R 3.5.1)                           
+##  CRAN (R 3.5.1)                           
+## 
+## [1] C:/Users/Julian/Documents/R/win-library/3.5
+## [2] C:/Program Files/R/R-3.5.0/library
+## 
+##  D -- DLL MD5 mismatch, broken installation.</code></pre>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

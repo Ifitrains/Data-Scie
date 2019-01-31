@@ -1,0 +1,295 @@
+---
+title: "Regression"
+output:
+bookdown::html_document2: default
+bibliography: bibfile.bib
+---
+
+## Hedonic Pricing Theory
+
+Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by @rosen1974hedonic. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.) In other words, the accommodation's attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listings characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants are location, property characteristics, quality signaling factors, hotel amenities and
+services and external factors like the number of close competitors.  [^See @wang2017price for a comprehensive list of studies on hotel price determinants.]
+
+
+## Airbnb pricing
+
+Airbnb has many unique listing characteristics, for instance, the possibility of instant booking or difference in the flexibility of cancellations. In addition to that, there are many factors which could influence the pricing decision of the host which cannot be explained by the data we have at our disposal. Airbnb host is very diverse and different that a regression analysis on the price will not cover every factor determining the pricing strategy of a host. 
+
+Nevertheless, we divided the variables into four different sets: distance to the closest metro station, property characteristics, rental rules, and reputational (host) characteristics. Please note, due to
+its great amount of missing values the host's response rate was excluded from the model, even though it might have a significant effect on the price.
+
+We use the price of the listings as our dependent variable in log form. The use of the log form means that we will interpret the effects of the independent variable to percentage changes in the listing prices. In addition, as @sirmans2005composition [p. 4] have pointed out the fact that hedonic models in logarithmic forms are very beneficial: "]...] the hedonic pricing model is often estimated in semi-log form with the natural log of price used as the dependent variable. Then the coefficient estimates allow one to calculate the percentage change in price for a one-unit change in the given variable." 
+
+We are now able to formulate our hypothesis before we can begin with our regression analysis.
+
+*Hypothesis 1:* The lesser the distance to the closest metro station, the higher the listing price.
+
+*Hypothesis 2:* Instant Bookability and flexible cancellation rules are associated with higher listing prices.
+
+*Hypothesis 3:* Higher average rating scores (index) are associated with higher listing prices.
+
+*Hypothesis 4:* Superhost status is associated with higher prices
+
+Thus, out final regression equation looks like the following:
+$$log(price_i) = \alpha + \delta D_i + \beta R_i + \gamma U_i + \tau P_i  + \epsilon_i $$
+where $price_i$ reflects the individual price per night, $\alpha$ the intercept, the vector $D$ reflects the distance measures, the $R$ vector contains rental listing features
+and the vector $U$ is composed of rental rules and lastly $P$ describe reputational characteristics of the listing. 
+
+### Regression diagnostic
+The data set consists of a rough location of the listings (based on latitude and longitude). This enables us to include a measure for “distance to city center”, in this case, Nyhavn, as a proxy of how well a certain apartment is located within a city.
+
+Moreover, we checked for multicollinearity among the independent variables
+to avoid any undesired effects on the regression results and thus our interpretation.
+
+
+
+
+```{r metro scraping, echo=F, warning=F, message=F}
+library(foreign)
+library(readr)
+library(tidyverse)
+library(bookdown)
+library(knitr)
+
+
+# Read in the data files
+
+airbnb <- read_csv(file = "data/listings.csv")
+
+# First cleaning including minimum numbers of review and verified host profile
+
+airbnb_clean <-  airbnb %>% 
+  filter(host_identity_verified == "TRUE" & number_of_reviews > 3)
+
+airbnb_clean <- airbnb_clean %>% 
+  mutate(cleaning_fee_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$cleaning_fee))) %>% 
+  mutate(price_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$price))) %>% 
+  mutate(extra_people_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$extra_people))) %>% 
+  mutate(security_deposit_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$security_deposit))) %>% 
+  filter(price_dkk > 0 & price_dkk < 17500)
+
+airbnb_clean <- airbnb_clean %>% mutate(
+  superhost = case_when(
+    host_is_superhost == "TRUE" ~ 1,
+    host_is_superhost == "FALSE" ~ 0
+  ),
+  host_pic = case_when(
+    host_has_profile_pic == "TRUE" ~ 1,
+    host_has_profile_pic == "FALSE" ~ 0
+  ),
+  host_veri = case_when(
+    host_identity_verified == "TRUE" ~ 1,
+    host_identity_verified == "FALSE" ~ 0
+  ),
+  instant = case_when(
+    instant_bookable == "TRUE" ~ 1,
+    instant_bookable == "FALSE" ~ 0
+  )
+)
+
+airbnb_clean <- airbnb_clean %>% mutate(
+  listing_duration = as.numeric(difftime(airbnb_clean$last_scraped, airbnb_clean$first_review, unit = "days")),
+  price_person = price_dkk/accommodates)
+
+airbnb_clean <- airbnb_clean %>% mutate(
+  home = case_when(
+    room_type == "Shared room" ~ NA_real_, # drop Shared Rooms
+    room_type == "Entire home/apt" ~ 1,
+    room_type == "Private room" ~ 0
+  ),
+strict_cancel = case_when(
+  cancellation_policy == "strict_14_with_grace_period" ~ 1,
+  cancellation_policy == "moderate" ~ 0,
+  cancellation_policy == "flexible" ~ 0
+),
+index = ((airbnb_clean$review_scores_accuracy + airbnb_clean$review_scores_cleanliness
+                        + airbnb_clean$review_scores_checkin +airbnb_clean$review_scores_communication
+                        + airbnb_clean$review_scores_location + airbnb_clean$review_scores_value)/6)
+)
+####
+# Scraping Metros
+library(rvest) 
+metroURL <- "https://en.wikipedia.org/wiki/List_of_Copenhagen_Metro_stations"
+metro_scrap <- metroURL %>% 
+  read_html %>%
+  html_nodes(xpath='//th') %>% html_nodes("a") %>% html_attr("href") %>% na.omit() %>% 
+  paste0("https://en.wikipedia.org", .) #create link, we only need first 22 lists
+
+# Using purrr instead of for-loops
+library(purrr)
+
+# Extract the geo locations and names of the metro stations
+names <- map_df(metro_scrap[1:22], ~ tibble(names = read_html(.) %>% html_nodes("#firstHeading") %>% html_text())) %>% distinct()
+geo <- map_df(metro_scrap[1:22], ~ tibble(coor = read_html(.) %>% html_nodes(".geo") %>% html_text())) %>% 
+  distinct()
+
+Numextract_coord <- function(string){
+  as.data.frame(as.numeric(unlist(regmatches(string, gregexpr("[[:digit:]]+\\.*[[:digit:]]*", string)))))
+}
+
+df <- Numextract_coord(geo$coor)
+lng <- df %>% dplyr::filter(row_number() %% 2 == 0) ## Select even rows
+lat <- df %>% dplyr::filter(row_number() %% 2 == 1) ## Select odd rows
+
+metro_df <- cbind(names, lat,lng)
+colnames(metro_df) <- c("metro","lat", "long")
+
+
+```
+
+## Calculate the distance
+
+```{r distance, echo=T, warning=F, message=F}
+library(geosphere)
+
+metro_sp <- metro_df[,c("lat", "long")]
+
+# Distance measure to measure the distance between a station and an accommodation
+# This is what the haversine formula looks like (it calculates the great-circle distance between two points on a sphere using their longitudes and latitudes. It was in principal aimed at determine the position of a ship. @robusto1957cosine)
+hav.dist <- function(long1, lat1, long2, lat2) {
+  R <- 6371
+  diff.long <- (long2 - long1)
+  diff.lat <- (lat2 - lat1)
+  a <- sin(diff.lat/2)^2 + cos(lat1) * cos(lat2) * sin(diff.long/2)^2
+  b <- 2 * asin(pmin(1, sqrt(a))) 
+  d = R * b
+  return(d)
+}
+
+
+# # we get a matrix that contains in the first row the distances between the first accomodation 
+# and all metro stations:
+
+dist_metacc <- geosphere::distm(cbind(airbnb_clean$longitude, airbnb_clean$latitude),
+                                cbind(metro_sp$lon, metro_sp$lat), 
+                                fun = distHaversine)
+summary(dist_metacc[,1]) # for the first metro
+head(dist_metacc[,1:3]) # Distances from the first six accomodations to the first three metros
+
+# now get the index of the smallest value in each row (margin = 1)
+# in other words: for each of the accomodations, get the index of the metro station that is closest
+minidx <- apply(dist_metacc, 1, which.min)
+print(minidx[1:5])
+
+# add result to data
+
+library(matrixStats)
+airbnb_clean$distance <- rowMins(as.matrix(dist_metacc))
+
+head(airbnb_clean$distance)
+
+
+# Lets create a proxy "central" in order to control for that
+# lat =55.679687, lng = 12.590659 (Coordinates of Nyhaven)
+library(AirBnBCopenhagen)
+nyhavn_lng <- 12.590659
+nyhavn_lat <- 55.679687
+airbnb_clean$dist_centrum <- AirBnBCopenhagen::distance(airbnb_clean$longitude,
+                                       airbnb_clean$latitude,
+                                nyhavn_lng, nyhavn_lat)
+```
+We calculated the distance between the location of a listed rental and the city center, calculated using "Harversine formula" with latitude and longitude
+in line with ....
+
+
+
+## Regression 
+
+
+
+```{r regression source, message=F, warning=F, include=FALSE, paged.print=FALSE, results='hide'}
+source("syntax/stepregression.R", encoding = "utf-8")
+```
+
+The usage of the log on our dependent variable is justified when we look at the following graphs. Recall that basic linear regression requires some assumptions in order to be valid: linearity (& no influential outliers), homoscedasticity of variance, independence of the error term, little or no multicollinearity and normally distributed residuals. 
+When the data is not normally distributed a non-linear transformation (e.g., log-transformation) might fix this issue. One can clearly see that the regression in the standard, no log form, is indeed not normally distributed. Thus, it is reasonable to adjust accordingly and use the log-form henceforth. 
+
+```{r regression diagnostic,results='asis', echo=T, warning=F, message=F}
+mod_no_log <- lm(price_dkk ~ distance + dist_centrum, data = airbnb_clean)
+plot_model(mod_no_log, type = "diag") %>% plot_grid()
+
+# Thus we take the log
+
+mod1 <- lm(log(price_dkk) ~ distance + dist_centrum, data = airbnb_clean)
+plot_model(mod1, type = "diag") %>% plot_grid()
+```
+
+Now we can finally take a look at our whole regression model. We included the variables step by step in order to see how the coefficients change. 
+
+```{r regression stargazer,results='asis', echo=F, warning=F, message=F}
+
+library(stargazer)
+stargazer(mod1, mod2, mod3, mod4, 
+          type = "html", 
+          title = "Linear Regression Model",  
+          style = "ajs",  
+          summary = NULL,  
+          out.header = FALSE,
+          column.labels = c("Model 1", "Model 2", "Model 3", "Model 4"), 
+          column.separate = c(1,1), 
+          covariate.labels = c("Distance Metro",  
+                               "Distance Centre (Proxy)",
+                               "Apartment (Dummy)",
+                               "Accomodates",
+                               "Number of Bathrooms",
+                               "Strict Cancel",
+                               "Instant Booking",
+                               "Minimum nights",
+                               "Cleaning Fee",
+                               "Review Index",
+                               "Superhost",
+                               "Listings duration"),
+          dep.var.caption = "Dep. Var",
+          star.cutoffs = c(0.05,0.01,0.001),
+          dep.var.labels = c("Log Price per night in DKK"))
+
+```
+
+## Discussion 
+
+ * The distance to the city center does have a significant, but very small effect on the price of the listing which is negative. The further away the listing is located, the less is its price. If we change $x$ by $1$ (unit), we’d expect our y variable to change by $100⋅\beta_1$ percent. In this case it means if the house is located 1 meter further away from Nyhavn, the city center, it decreases its price by 0.001%. If the listing is, for instance, 1km further away, ceteris paribus approximately on average it reduces its price by 1%.
+ 
+* The distance to the closest metro does not have a significant effect.
+
+* Property characteristics that are positively associated with the listings price are the type (Apartment), how many people it can accommodate and the number of bathrooms. All are highly signifacnt at the 0.1 percent level. 
+
+* The listings specific rental rules like instant bookable rentals or strict cancellation policies do not have the expected effect. 
+
+
+
+
+## Limitations
+
+There are some limitations concerning the data used in the analysis. However beneficial the provision of data from AirbnbInside.com is, it is clear that there will be a difference between advertised listings and booked listings. The problem is that some of the advertised listings, which is the basis for the InsideAirbnb-dataset, are outdated or created by accident and are thus not booked. I tried to control for this by setting a minimum requirement concerning the number of reviews as well as the verification of the host as a necessary condition. "Scrapers that track updates to host calendars cannot distinguish real bookings from
+dates host block for other reasons." @coles2017airbnb
+
+@coles2017airbnb also point to the fact that there is a discrepancy between the price listed and the actual transaction price. The scraping method does not include any corrections for specific discounts, i.e. weekly discount. 
+
+In addition to that, in a next analysis, a researcher could investigate the influence factor of a specific neighborhood on the price of the listing. It can be expected that the more "in" a neighborhood is, the more it will cost for both the host (rent) and the guest (listing price).
+
+
+
+
+
+
+## Final Findings Summarized:
+
+
+
+
+ * Higher prices are associated with the number of bathrooms, how many people the listing can accommodate and 
+
+ * Cancellation policies are fairly spread out, but the analysis showed that the expected relationship cannot be detected in the data. It seems to have no effect on the price of the listing. 
+ * Most top 5 words in description shows that more hosts talk about the surrounding area rather than the listing itself.
+
+the most expensive neighborhoods.
+
+Listings with prices around $200 - 300 get the most reviews, meaning that they are booked most often.
+
+
+Higher prices are associated with moderate and strict
+cancellation rules. However, the rental price is unaffected by the requirement that guests provide a
+profile photo or verify their telephone number.
+
+
+## References 

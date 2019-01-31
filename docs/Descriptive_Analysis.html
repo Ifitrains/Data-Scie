@@ -1,0 +1,3080 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Julian Kohlruss" />
+
+
+<title>Descriptive Analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">AirBnB Copenhagen</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="Introduction.html">
+    <span class="fa fa-map"></span>
+     
+    Introduction
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-broom"></span>
+     
+    Descriptive Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Descriptive_Analysis.html">Tidy Data</a>
+    </li>
+    <li>
+      <a href="visualisation.html">Visualisation</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Regression.html">
+    <span class="fa fa-chart-line"></span>
+     
+    Regression Analysis
+  </a>
+</li>
+<li>
+  <a href="code.html">
+    <span class="fa fa-code"></span>
+     
+    The full code
+  </a>
+</li>
+<li>
+  <a href="about.html">
+    <span class="fa fa-user-graduate"></span>
+     
+    About Me
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:j.kohlruss@zeppelin-university.net">
+    <span class="fa fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Descriptive Analysis</h1>
+<h4 class="author"><em>Julian Kohlruss</em></h4>
+<h4 class="date"><em>20 Januar 2019</em></h4>
+
+</div>
+
+
+<div id="what-is-in-the-data-set" class="section level2">
+<h2>What is in the data set?</h2>
+<pre class="r"><code>airbnb &lt;- readr::read_csv(&quot;data/listings.csv&quot;)</code></pre>
+<pre class="r"><code>dim(airbnb)</code></pre>
+<pre><code>## [1] 25946    96</code></pre>
+<p>Airbnb Inside collects data from publicly available information from the Airbnb website. The data consists of 96 variables including all listings details as well as guest reviews. We will decide in four steps which variables will be used in our analysis. Using the <code>kableExtra</code> package, we can take a closer look at the first 24 columns:</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:910px; ">
+<table class="table table-striped table-hover table-condensed table-responsive" style="font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:left;">
+listing_url
+</th>
+<th style="text-align:right;">
+scrape_id
+</th>
+<th style="text-align:left;">
+last_scraped
+</th>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:left;">
+summary
+</th>
+<th style="text-align:left;">
+space
+</th>
+<th style="text-align:left;">
+description
+</th>
+<th style="text-align:left;">
+experiences_offered
+</th>
+<th style="text-align:left;">
+neighborhood_overview
+</th>
+<th style="text-align:left;">
+notes
+</th>
+<th style="text-align:left;">
+transit
+</th>
+<th style="text-align:left;">
+access
+</th>
+<th style="text-align:left;">
+interaction
+</th>
+<th style="text-align:left;">
+house_rules
+</th>
+<th style="text-align:left;">
+thumbnail_url
+</th>
+<th style="text-align:left;">
+medium_url
+</th>
+<th style="text-align:left;">
+picture_url
+</th>
+<th style="text-align:left;">
+xl_picture_url
+</th>
+<th style="text-align:right;">
+host_id
+</th>
+<th style="text-align:left;">
+host_url
+</th>
+<th style="text-align:left;">
+host_name
+</th>
+<th style="text-align:left;">
+host_since
+</th>
+<th style="text-align:left;">
+host_location
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+6983
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/rooms/6983" class="uri">https://www.airbnb.com/rooms/6983</a>
+</td>
+<td style="text-align:right;">
+2.018102e+13
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:left;">
+Copenhagen ‘N Livin’
+</td>
+<td style="text-align:left;">
+Lovely apartment located in the hip Nørrebro area, close to bars, cafés and restaurants. The room itself is rather small, but sleeps two. Has a bed, hangers and a cupboard. Large living room with couch, chair and small table, as well as a large dining table for dinner. Large bathroom with good shower and washing machine. Kitchen with new gas stove, pots and pans, coffee machine and other amenities. Also a small table, where you can have breakfast.
+</td>
+<td style="text-align:left;">
+Beautiful and cosy apartment conveniently located in the hip Nørrebro area, close to cafés, bakeries, shops, and bars. The apartment has three bedrooms and a living room, as well as a large bathroom and a fully equipped kitchen. You will be renting the small room, which sleeps 2 people. Situated in the outskirts of central Copenhagen, in the charming multi-cultural “Nørrebro”-area, close to shopping amenities and a 10-min walk from both Copenhagen Business School (CBS) and University of Copenhagen, and a 15-min walk from Tivoli and the town hall square, this apartment offers a room with a (narrow) double bed (sleeps (Phone number hidden by Airbnb) cm) and a closet and a desk, as well as a living room with a sofa (not a sofa bed!) and a dining table. The bathroom includes a shower, and towels will be provided for free. There is also a washing machine, which you are welcome to use. The apartment also has a small, but well-equipped kitchen, which can be used for cooking, as long as it’s l
+</td>
+<td style="text-align:left;">
+Lovely apartment located in the hip Nørrebro area, close to bars, cafés and restaurants. The room itself is rather small, but sleeps two. Has a bed, hangers and a cupboard. Large living room with couch, chair and small table, as well as a large dining table for dinner. Large bathroom with good shower and washing machine. Kitchen with new gas stove, pots and pans, coffee machine and other amenities. Also a small table, where you can have breakfast. Beautiful and cosy apartment conveniently located in the hip Nørrebro area, close to cafés, bakeries, shops, and bars. The apartment has three bedrooms and a living room, as well as a large bathroom and a fully equipped kitchen. You will be renting the small room, which sleeps 2 people. Situated in the outskirts of central Copenhagen, in the charming multi-cultural “Nørrebro”-area, close to shopping amenities and a 10-min walk from both Copenhagen Business School (CBS) and University of Copenhagen, and a 15-min walk from Tivoli and the town h
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+Nice bars and cozy cafes just minutes away, yet the street itself is quiet and you won’t be bothered by loud music.
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Bus 66 runs to the central station. Forum metro is about 10 min walk from the apartment; from there you can reach the airport. However, a trip to Copenhagen is not complete without a bike ride. Everyone here gets around by bike, and I highly recommend you rent one while you are here.
+</td>
+<td style="text-align:left;">
+Bedroom, living room, kitchen, and bathroom for shared use. You will be sharing the apartment with two people.
+</td>
+<td style="text-align:left;">
+We are usually at work during day time, but will be home most evenings and happy to chat or share a meal.
+</td>
+<td style="text-align:left;">
+No smoking allowed! No pets.
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/pictures/42044170/f63c4d99_original.jpg?aki_policy=large" class="uri">https://a0.muscache.com/im/pictures/42044170/f63c4d99_original.jpg?aki_policy=large</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+16774
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/users/show/16774" class="uri">https://www.airbnb.com/users/show/16774</a>
+</td>
+<td style="text-align:left;">
+Simon
+</td>
+<td style="text-align:left;">
+2009-05-12
+</td>
+<td style="text-align:left;">
+Copenhagen, Capital Region of Denmark, Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26057
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/rooms/26057" class="uri">https://www.airbnb.com/rooms/26057</a>
+</td>
+<td style="text-align:right;">
+2.018102e+13
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:left;">
+Lovely house - most attractive area
+</td>
+<td style="text-align:left;">
+Our lovely house in the center of the city is placed in a small silence street. 50 meter from the popular Emmery-bacery, and restaurant and cafees around. You are in a walkingdistans to all main attractions, and have the “lakes” in your backyards.
+</td>
+<td style="text-align:left;">
+Totally charming old 150 m2 stone house from year 1870 - in a very unique part of the City called “Kartoffelrækkerne”. It’s like a mini-community in a very central part of Copenhagen - the most attractive area in Copenhagen - in the heart of the city, but still in peace and quiet. Within walking distance you will find the lakes, several museums, shops, cafés, bars, parks and restaurants. The house is modern and renovated in a handsome way with respect for the old style and architecture. Three floors. 1st floor: Living room, kitchen and dining room, with direct entrance to a charming and sunny “patio”, guest toilet. 2nd floor: 1 bedroom with double bed, 1 music room with a piano and with entrance to a lovely veranda, a full bathroom with a shower and bath tub. 3rd floor: 3 bedrooms - one with double bed (140), one with 1 1/2 bed (120), and one single bed(90). The house is perfect for a family of 4 or 6 persons - also with children. You will love the house:-) Encantadora antigua casa de
+</td>
+<td style="text-align:left;">
+Our lovely house in the center of the city is placed in a small silence street. 50 meter from the popular Emmery-bacery, and restaurant and cafees around. You are in a walkingdistans to all main attractions, and have the “lakes” in your backyards. Totally charming old 150 m2 stone house from year 1870 - in a very unique part of the City called “Kartoffelrækkerne”. It’s like a mini-community in a very central part of Copenhagen - the most attractive area in Copenhagen - in the heart of the city, but still in peace and quiet. Within walking distance you will find the lakes, several museums, shops, cafés, bars, parks and restaurants. The house is modern and renovated in a handsome way with respect for the old style and architecture. Three floors. 1st floor: Living room, kitchen and dining room, with direct entrance to a charming and sunny “patio”, guest toilet. 2nd floor: 1 bedroom with double bed, 1 music room with a piano and with entrance to a lovely veranda, a full bathroom with a sho
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+The neighborhood is the most famous one and the most “upper-class” in the city center. You are in a house with small garden and a “patio”, and still - you are in the center. You are inside the “city walls”, and in walking-distance to everything. Transporting yourself around in the city by bike is nice thing to do (but not a “must”), like we - living in town, always do.
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Walking-distance to metro/station for transport out of town
+</td>
+<td style="text-align:left;">
+You will have access to the whole house
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+We will leave the house clean and in good and cozy shape, and expect you to take care of the house, joy your stay and feel home when you are here, but also leave the house in the same shape and conditions. It is a no-shoes-inside-home:-)
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/pictures/bfbca07e-4cc1-42ce-822b-aa878a656e7c.jpg?aki_policy=large" class="uri">https://a0.muscache.com/im/pictures/bfbca07e-4cc1-42ce-822b-aa878a656e7c.jpg?aki_policy=large</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+109777
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/users/show/109777" class="uri">https://www.airbnb.com/users/show/109777</a>
+</td>
+<td style="text-align:left;">
+Kari
+</td>
+<td style="text-align:left;">
+2010-04-17
+</td>
+<td style="text-align:left;">
+Copenhagen, Capital Region of Denmark, Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26473
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/rooms/26473" class="uri">https://www.airbnb.com/rooms/26473</a>
+</td>
+<td style="text-align:right;">
+2.018102e+13
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:left;">
+City Centre Townhouse Sleeps 1-12 persons
+</td>
+<td style="text-align:left;">
+TOWN HOUSE ON KNABROSTRÆDE - located in the absolute ❤️ of Copenhagens old town. Close to everything! Located off ‘Strøget’. You will find old town’s foodie walking street “Strædet” just round the corner, offering a wide range of restaurants and cafes. 5-10mins walk to various cultural sites which include Thorvaldsens Museum, Borgen, National Museum, DAC/Blox, TIVOLI, the Metro as well as the main station. ENJOY!
+</td>
+<td style="text-align:left;">
+The house is a total of 240sqm divided on 4 floors and consists of 6 bedrooms, 1 large open living room / dining room and 2 ½ bathrooms. Fully furnished and equipped kitchen, it comes with all linen &amp; towels. 5 bedrooms have comfortable, large double beds and a single room with a fold-out small double bed plus extra two loft beds.(loft beds are accesable by the ladder and are not sitable for eldery people) The top room is family friendly. Amenities include internet, cable TV, dishwasher, microwave, coffee machine, etc. Blankets, pillows, bed linens, towels, cable and internet subscriptions, utilities such as heat, water and electricity consumption all included. Weekly and monthly rates are available upon request.
+</td>
+<td style="text-align:left;">
+TOWN HOUSE ON KNABROSTRÆDE - located in the absolute ❤️ of Copenhagens old town. Close to everything! Located off ‘Strøget’. You will find old town’s foodie walking street “Strædet” just round the corner, offering a wide range of restaurants and cafes. 5-10mins walk to various cultural sites which include Thorvaldsens Museum, Borgen, National Museum, DAC/Blox, TIVOLI, the Metro as well as the main station. ENJOY! The house is a total of 240sqm divided on 4 floors and consists of 6 bedrooms, 1 large open living room / dining room and 2 ½ bathrooms. Fully furnished and equipped kitchen, it comes with all linen &amp; towels. 5 bedrooms have comfortable, large double beds and a single room with a fold-out small double bed plus extra two loft beds.(loft beds are accesable by the ladder and are not sitable for eldery people) The top room is family friendly. Amenities include internet, cable TV, dishwasher, microwave, coffee machine, etc. Blankets, pillows, bed linens, towels, cable and interne
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Please be respectful to the neighbors and keep the noise down after 10 pm. After taking a shower, please air the bathroom. There is under no circumstances allowed smoking in the house or outside the windows. Please turn off the lights when leaving the house. Please latch the windows (both when closed or open) to avoid strong wind damaging the windows.
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/pictures/8e132ba0-b68c-4878-92ae-2cf4476df95a.jpg?aki_policy=large" class="uri">https://a0.muscache.com/im/pictures/8e132ba0-b68c-4878-92ae-2cf4476df95a.jpg?aki_policy=large</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+112210
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/users/show/112210" class="uri">https://www.airbnb.com/users/show/112210</a>
+</td>
+<td style="text-align:left;">
+Oliver
+</td>
+<td style="text-align:left;">
+2010-04-22
+</td>
+<td style="text-align:left;">
+Copenhagen, Capital Region of Denmark, Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29118
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/rooms/29118" class="uri">https://www.airbnb.com/rooms/29118</a>
+</td>
+<td style="text-align:right;">
+2.018102e+13
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:left;">
+Best Location in Cool Istedgade
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+The apartment is situated in the middle of the lively Istedgade, with lots of coffee shops, restaurants, bars, designer stores etc around, just outside a park and playground: Skydebanehaven. So you can not hear the noise from Istedgade, but enjoy the perks of having it a stone from the main entrance. The place is only 8 min. walk from the main station: København H and 12 min. from Tivoli and The City Hall. So everything is within reach. The apartment is 90 m2: two big living rooms en suite - one of which is my work space, here is my piano and a massage bed. There is a big kitchen (fully equipped with juicer, dishwasher and what not - from kitchen you can go to the balcony, nice for having morning coffee, since its located to the east. From the kitchen a small hallway leads to the bathroom and the bedroom. Bathroom with shower and a washing machine and the bedroom is nice and quiet facing the backyard, which you can see from the french doors. Wifi is included, as is clean bedsh
+</td>
+<td style="text-align:left;">
+The apartment is situated in the middle of the lively Istedgade, with lots of coffee shops, restaurants, bars, designer stores etc around, just outside a park and playground: Skydebanehaven. So you can not hear the noise from Istedgade, but enjoy the perks of having it a stone from the main entrance. The place is only 8 min. walk from the main station: København H and 12 min. from Tivoli and The City Hall. So everything is within reach. The apartment is 90 m2: two big living rooms en suite - one of which is my work space, here is my piano and a massage bed. There is a big kitchen (fully equipped with juicer, dishwasher and what not - from kitchen you can go to the balcony, nice for having morning coffee, since its located to the east. From the kitchen a small hallway leads to the bathroom and the bedroom. Bathroom with shower and a washing machine and the bedroom is nice and quiet facing the backyard, which you can see from the french doors. Wifi is included, as is clean bedsh
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Smoking is allowed on the balcony only. Please no outdoor shoes indoors. No playing the piano if you can’t play, if you CAN play, please play only between the hours of 10 am and 5 pm. due to my neighboors. Kindly take out the trash when you leave and note that since there is no cleaning fee, I expect you to leave the place in same condition as when you came, which is clean :-)
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/pictures/236213/33956c43_original.jpg?aki_policy=large" class="uri">https://a0.muscache.com/im/pictures/236213/33956c43_original.jpg?aki_policy=large</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+125230
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/users/show/125230" class="uri">https://www.airbnb.com/users/show/125230</a>
+</td>
+<td style="text-align:left;">
+Nana
+</td>
+<td style="text-align:left;">
+2010-05-15
+</td>
+<td style="text-align:left;">
+Copenhagen, Capital Region of Denmark, Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29618
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/rooms/29618" class="uri">https://www.airbnb.com/rooms/29618</a>
+</td>
+<td style="text-align:right;">
+2.018102e+13
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:left;">
+Artsy and familyfriendly home in lovely Copenhagen
+</td>
+<td style="text-align:left;">
+Artsy, bright and spacious flat, close to the city centre, nice bars and restaurants, parks and transport. Ideal for a small group of friends or a family to hang out in Copenhagen for summer vacation.
+</td>
+<td style="text-align:left;">
+It’s a three bedroom apartment with a spacious living room and a spacious kitchen. The main bedroom has a double bed. Next to the main bedroom, there is a children’s bedroom with a baby/toddler size bed. In the living room, there is a sofa bed. And next to the living room there is a small bedroom with a camp bed. So there is room for a family of 5 including a toddler, or a group of friends (4 people in total). The kitchen is fully equipped with everything for making great dinners or just plain breakfast if you prefer staying out all day.
+</td>
+<td style="text-align:left;">
+Artsy, bright and spacious flat, close to the city centre, nice bars and restaurants, parks and transport. Ideal for a small group of friends or a family to hang out in Copenhagen for summer vacation. It’s a three bedroom apartment with a spacious living room and a spacious kitchen. The main bedroom has a double bed. Next to the main bedroom, there is a children’s bedroom with a baby/toddler size bed. In the living room, there is a sofa bed. And next to the living room there is a small bedroom with a camp bed. So there is room for a family of 5 including a toddler, or a group of friends (4 people in total). The kitchen is fully equipped with everything for making great dinners or just plain breakfast if you prefer staying out all day. We will not be around during your stay but you are most welcome to contact us if you need tips for Copenhagen or how the washing machine works. The apartment is situated in Østerbro, very close to the more lively Nørrebro with lots of bars, restaurants,
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+The apartment is situated in Østerbro, very close to the more lively Nørrebro with lots of bars, restaurants, supermarkets and little cute shops. Let us know what you are looking for and we will provide you with special tips for your stay. You can easily access the city centre from the flat - 5 minutes by bus or 15 minutes walk along the city lakes.
+</td>
+<td style="text-align:left;">
+Please note that the bed in the second bedroom is a camp bed. It works fine but it’s not a soft madras. Please note that the airbnb reviews concern our listing when we offered only two rooms of the flat and not the entire place.
+</td>
+<td style="text-align:left;">
+There are good bus connections very close to the flat towards the city centre and to railway stations if you fancy a trip out of town. Our flat is just 3 stop (5 aprx. minutes) from Nørreport Station (the city centre), where you can connect to S-train, metro and trains to the airport, Malmö and Humlebæk, Lousiana Museum of Modern Art. A bike is the easiest way to get around Copenhagen. However, the public transport system is working very well as well.
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+We will not be around during your stay but you are most welcome to contact us if you need tips for Copenhagen or how the washing machine works.
+</td>
+<td style="text-align:left;">
+Please respect that this is our home.
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/pictures/547e4a06-9c79-4b01-a36e-0f4fe0ce068c.jpg?aki_policy=large" class="uri">https://a0.muscache.com/im/pictures/547e4a06-9c79-4b01-a36e-0f4fe0ce068c.jpg?aki_policy=large</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+127577
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/users/show/127577" class="uri">https://www.airbnb.com/users/show/127577</a>
+</td>
+<td style="text-align:left;">
+Simon And Anna
+</td>
+<td style="text-align:left;">
+2010-05-18
+</td>
+<td style="text-align:left;">
+Copenhagen, Capital Region of Denmark, Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+31094
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/rooms/31094" class="uri">https://www.airbnb.com/rooms/31094</a>
+</td>
+<td style="text-align:right;">
+2.018102e+13
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:left;">
+Very central and cozy, new kitchen
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Welcome to our home, we hope you will enjoy your trip to Copenhagen! 64 m2 vacation rental for 1-3 people in central Copenhagen. The appartment is very centrally located in walking distance to most major attractions. The nearest trainstation is only 300m away, and the citytrains run every 6 minutes. The central trainstation and city centre is only a kilometer away, and still, the appartment is situated in a very quiet street. The kitchen is new and fully equipped with a dishwasher and a little table for two. The appartment has it’s own toilet and bath. If you prefer to go out and eat, there are plenty of good restaurants within walking distance. There is wireless internet for free. The bedroom is equipped with a doublebed and the living room with a sofa and a dining table. Pillows, duvets, bed clothes and towels are provided according to the number of persons staying in the apartment. Children under 3 years are free of charge. Very nice green courtyard where you can dine or grill.
+</td>
+<td style="text-align:left;">
+Welcome to our home, we hope you will enjoy your trip to Copenhagen! 64 m2 vacation rental for 1-3 people in central Copenhagen. The appartment is very centrally located in walking distance to most major attractions. The nearest trainstation is only 300m away, and the citytrains run every 6 minutes. The central trainstation and city centre is only a kilometer away, and still, the appartment is situated in a very quiet street. The kitchen is new and fully equipped with a dishwasher and a little table for two. The appartment has it’s own toilet and bath. If you prefer to go out and eat, there are plenty of good restaurants within walking distance. There is wireless internet for free. The bedroom is equipped with a doublebed and the living room with a sofa and a dining table. Pillows, duvets, bed clothes and towels are provided according to the number of persons staying in the apartment. Children under 3 years are free of charge. Very nice green courtyard where you can dine or grill. Wh
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+What else is nearby? To be honest, I think our neighbourhood “Vesterbro” is the coolest in Copenhagen. Just 100 meters away you have Sdr. Boulevard, which is a lovely open boulevard, where lots of the cool kids hang out in the afternoon and evening. Istedgade is only 300 meters away with lots of great but not too expensive restaurents, winebars and clothes shops. “Kødbyen” (The old meat packing district), which has now been made into trendy restaurents, bars and nightclubs - only 350 meters away.. If you feel more like authentic old bars, there are plenty nearby.. There are lots of parks around. The beautiful harbour is great for swimming and only 1 km away. You will be able to manage you days here on foot ;-)..
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Be Good :-) Listed below are a few house rules • Please remove shoes when inside the apartment • No smoking (smoking only allowed on the street) • When using the sofa as a bed, a sheet will be provided and must be used.
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/pictures/19408864/7c4cd0ec_original.jpg?aki_policy=large" class="uri">https://a0.muscache.com/im/pictures/19408864/7c4cd0ec_original.jpg?aki_policy=large</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+129976
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/users/show/129976" class="uri">https://www.airbnb.com/users/show/129976</a>
+</td>
+<td style="text-align:left;">
+Ebbe
+</td>
+<td style="text-align:left;">
+2010-05-22
+</td>
+<td style="text-align:left;">
+Copenhagen, Capital Region of Denmark, Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+32379
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/rooms/32379" class="uri">https://www.airbnb.com/rooms/32379</a>
+</td>
+<td style="text-align:right;">
+2.018102e+13
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:left;">
+1668 ft2 artist flat on Vesterbro
+</td>
+<td style="text-align:left;">
+Bright Artistic luxury apartment in very trendy area of Copenhagen, located on the 3rd floor of protected back building without traffic noise. 4 room apartment, where the size will be flexible in terms of how many rooms you order: 1 or 2 bedroom’s or incl weekendbed in livingroom OBS Free Parking plot in the basement area in the periode June 28 - July 12 2017.
+</td>
+<td style="text-align:left;">
+1668 ft2 ft2 bright luxurious apartment with wireless Internet on wonderful location in Copenhagen. The apartment is located in a historic building in the backyard - away from traffic, but with the city’s pulse. APARTMENT Your hostess is an artist and appreciate the visual environment. The apartment can accommodate up to 4 people ( 5 including weekend bed on the loungesofa ), either a family or mature couples sharing and are super delicious also for example a couple who want special frames on their visit to Copenhagen. There are five rooms which are distributed by: - Large bedroom with double bed and TV - Large bedroom with king size bed, TV and wardrobe - Small room with a single bed - Large living room with a lounge sofa, weekend bed, TV, DVD, WiFi - Large dining room with CD player - Kitchen with space to eat and washing machine, dishwasher, microwave, etc. - two new bathrooms. You can see my floor plan in one of my pictures. AREA 10-minute walk from the main train station, the even
+</td>
+<td style="text-align:left;">
+Bright Artistic luxury apartment in very trendy area of Copenhagen, located on the 3rd floor of protected back building without traffic noise. 4 room apartment, where the size will be flexible in terms of how many rooms you order: 1 or 2 bedroom’s or incl weekendbed in livingroom OBS Free Parking plot in the basement area in the periode June 28 - July (Phone number hidden by Airbnb) bright luxurious apartment with wireless Internet on wonderful location in Copenhagen. The apartment is located in a historic building in the backyard - away from traffic, but with the city’s pulse. APARTMENT Your hostess is an artist and appreciate the visual environment. The apartment can accommodate up to 4 people ( 5 including weekend bed on the loungesofa ), either a family or mature couples sharing and are super delicious also for example a couple who want special frames on their visit to Copenhagen. There are five rooms which are distributed by: - Large bedroom with double bed and TV - Large bedroom
+</td>
+<td style="text-align:left;">
+none
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+it’s a nice place, just in the Urban city, with transport super nearby, to all attraction
+</td>
+<td style="text-align:left;">
+When booking you will always have the whole apartment to yourselves. The size will be flexible in terms of how many rooms you order: When you book two people, you will have the entire apartment, with a large double room (your choice between the two) with king size bed. When you book 3, you will also get the chamber, with a single bed. Booking for 4 people you get your access to two large double bedrooms with king size beds where the bed in the room with red chairs can be made into two single beds, as required. When booking 5 people, you will get the whole apartment with two bedrooms. incl. a nice weekend bed in the living room.
+</td>
+<td style="text-align:left;">
+My apartment, super bright, placed in the most Hip area in Copenhagen, is ready for you, while I’m in abroard for a Scenography conference. My neighbor will welcome you, guide you and give the keys.
+</td>
+<td style="text-align:left;">
+When booking you will always have the whole apartment to yourselves. The size will be flexible in terms of how many rooms you order: When you book two people, one will have the entire apartment, with a large double room (your choice between the two) with king size bed. When you book 3, you will also get the chamber, with a single bed. Booking for 4 people you get you access to two large double bedrooms with king size beds where the bed in the room with red chairs can be made into two single beds, as required. When booking 5 people, you will get the whole apartment (165 m2) with all three bedrooms. When booking 6 people will also get a nice weekend bed in the living room. If you want all three bedrooms for 3 people, please book for 4 guests and send the owner message.
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/pictures/4088872/c50aeb23_original.jpg?aki_policy=large" class="uri">https://a0.muscache.com/im/pictures/4088872/c50aeb23_original.jpg?aki_policy=large</a>
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+140105
+</td>
+<td style="text-align:left;">
+<a href="https://www.airbnb.com/users/show/140105" class="uri">https://www.airbnb.com/users/show/140105</a>
+</td>
+<td style="text-align:left;">
+Lise
+</td>
+<td style="text-align:left;">
+2010-06-07
+</td>
+<td style="text-align:left;">
+Copenhagen, Capital Region of Denmark, Denmark
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Out of the first 24 columns, we will keep the following variables:</p>
+<ul>
+<li><strong>id</strong>: a listing identifier that can be used to extend the current data set with other files.</li>
+<li><strong>last_scraped</strong>: In order to calculate listings durations.</li>
+<li><strong>description</strong>: a textual description of the listing and its surroundings. We will keep it for the LDA-Analysis later on.</li>
+<li><strong>host_id</strong>: Each Airbnb host has a unique host_id value.</li>
+</ul>
+<p>Out of the first 24 columns we will delete the following variables:</p>
+<ul>
+<li>listing_url</li>
+<li>scrape_id</li>
+<li>name - textual description of the listings</li>
+<li>summary - textual description of the listings</li>
+<li>space - textual description of the listings</li>
+<li>experiences_offered - contains only none value</li>
+<li>neighborhood_overview - textual description of the neighborhood</li>
+<li>notes</li>
+<li>transit</li>
+<li>access</li>
+<li>interaction</li>
+<li>house_rules</li>
+<li>thumbnail_url - contains no values</li>
+<li>medium_url - contains no values</li>
+<li>picture_url -</li>
+<li>xl_picture_url - contains no values</li>
+<li>host_url</li>
+<li>host_name</li>
+<li>host_since</li>
+<li>host_location</li>
+</ul>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:910px; ">
+<table class="table table-striped table-hover table-condensed table-responsive" style="font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+host_about
+</th>
+<th style="text-align:left;">
+host_response_time
+</th>
+<th style="text-align:left;">
+host_response_rate
+</th>
+<th style="text-align:left;">
+host_acceptance_rate
+</th>
+<th style="text-align:left;">
+host_is_superhost
+</th>
+<th style="text-align:left;">
+host_thumbnail_url
+</th>
+<th style="text-align:left;">
+host_picture_url
+</th>
+<th style="text-align:left;">
+host_neighbourhood
+</th>
+<th style="text-align:right;">
+host_listings_count
+</th>
+<th style="text-align:right;">
+host_total_listings_count
+</th>
+<th style="text-align:left;">
+host_verifications
+</th>
+<th style="text-align:left;">
+host_has_profile_pic
+</th>
+<th style="text-align:left;">
+host_identity_verified
+</th>
+<th style="text-align:left;">
+street
+</th>
+<th style="text-align:left;">
+neighbourhood
+</th>
+<th style="text-align:left;">
+neighbourhood_cleansed
+</th>
+<th style="text-align:left;">
+neighbourhood_group_cleansed
+</th>
+<th style="text-align:left;">
+city
+</th>
+<th style="text-align:left;">
+state
+</th>
+<th style="text-align:right;">
+zipcode
+</th>
+<th style="text-align:left;">
+market
+</th>
+<th style="text-align:left;">
+smart_location
+</th>
+<th style="text-align:left;">
+country_code
+</th>
+<th style="text-align:left;">
+country
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+I’m currently working as an environmental consultant for a large engineering consultancy in Copenhagen. When I’m not at work, I spend time doing sports (playing football, running, cross fit), or doing indoor activities such as reading books and listening to music. I have recently taken an interest in cooking, and I love great food. I’m outgoing, happy and love good company. And I love my bike as any other person from Copenhagen..
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/16774/profile_pic/1401276934/original.jpg?aki_policy=profile_small" class="uri">https://a0.muscache.com/im/users/16774/profile_pic/1401276934/original.jpg?aki_policy=profile_small</a>
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/16774/profile_pic/1401276934/original.jpg?aki_policy=profile_x_medium" class="uri">https://a0.muscache.com/im/users/16774/profile_pic/1401276934/original.jpg?aki_policy=profile_x_medium</a>
+</td>
+<td style="text-align:left;">
+Nørrebro
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+[‘email’, ‘phone’, ‘reviews’]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+Copenhagen, Hovedstaden, Denmark
+</td>
+<td style="text-align:left;">
+Nørrebro
+</td>
+<td style="text-align:left;">
+Nrrebro
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Hovedstaden
+</td>
+<td style="text-align:right;">
+2200
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Copenhagen, Denmark
+</td>
+<td style="text-align:left;">
+DK
+</td>
+<td style="text-align:left;">
+Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+We are a family with 2 children, and living in a great and beautiful house placed in a very special part in central Copenhagen called Kartoffelraekkerne. It’s like a small village in the center of the city! The house is available from time to time - when we are travelling/working abroad. We’re looking forward to hearing from you.
+</td>
+<td style="text-align:left;">
+within a day
+</td>
+<td style="text-align:left;">
+100%
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/109777/profile_pic/1359537563/original.jpg?aki_policy=profile_small" class="uri">https://a0.muscache.com/im/users/109777/profile_pic/1359537563/original.jpg?aki_policy=profile_small</a>
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/109777/profile_pic/1359537563/original.jpg?aki_policy=profile_x_medium" class="uri">https://a0.muscache.com/im/users/109777/profile_pic/1359537563/original.jpg?aki_policy=profile_x_medium</a>
+</td>
+<td style="text-align:left;">
+Indre By
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+[‘email’, ‘phone’, ‘facebook’, ‘reviews’, ‘jumio’, ‘offline_government_id’, ‘government_id’]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+Copenhagen, Hovedstaden, Denmark
+</td>
+<td style="text-align:left;">
+Indre By
+</td>
+<td style="text-align:left;">
+Indre By
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Hovedstaden
+</td>
+<td style="text-align:right;">
+2100
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Copenhagen, Denmark
+</td>
+<td style="text-align:left;">
+DK
+</td>
+<td style="text-align:left;">
+Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<p>Gentle male, have travelled the world for 20 years and have in the process learnt about the art of housing. While I prefer to let you conquer the city on your own paths, please feel free to use my experience if you need any tips &amp; advice.</p>
+<p>Will do my best to give you a perfect slice of Copenhagen.</p>
+<p>In my spare time I love consuming good food, taking long walks on the beaches or watching movies.</p>
+I live &amp; work here and can be contacted with any comments &amp; questions.
+</td>
+<td style="text-align:left;">
+within a day
+</td>
+<td style="text-align:left;">
+70%
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/112210/profile_pic/1364494488/original.jpg?aki_policy=profile_small" class="uri">https://a0.muscache.com/im/users/112210/profile_pic/1364494488/original.jpg?aki_policy=profile_small</a>
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/112210/profile_pic/1364494488/original.jpg?aki_policy=profile_x_medium" class="uri">https://a0.muscache.com/im/users/112210/profile_pic/1364494488/original.jpg?aki_policy=profile_x_medium</a>
+</td>
+<td style="text-align:left;">
+Indre By
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+[‘email’, ‘phone’, ‘facebook’, ‘reviews’, ‘jumio’, ‘government_id’]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+Copenhagen, Hovedstaden, Denmark
+</td>
+<td style="text-align:left;">
+Indre By
+</td>
+<td style="text-align:left;">
+Indre By
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Hovedstaden
+</td>
+<td style="text-align:right;">
+1210
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Copenhagen, Denmark
+</td>
+<td style="text-align:left;">
+DK
+</td>
+<td style="text-align:left;">
+Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+I have a Master of Arts in Musicology and I work as vocal coach and a singer and I LOVE to travel and meet people from all over the world.
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/125230/profile_pic/1371558644/original.jpg?aki_policy=profile_small" class="uri">https://a0.muscache.com/im/users/125230/profile_pic/1371558644/original.jpg?aki_policy=profile_small</a>
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/125230/profile_pic/1371558644/original.jpg?aki_policy=profile_x_medium" class="uri">https://a0.muscache.com/im/users/125230/profile_pic/1371558644/original.jpg?aki_policy=profile_x_medium</a>
+</td>
+<td style="text-align:left;">
+Vesterbro
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+[‘email’, ‘phone’, ‘reviews’]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+Copenhagen, Hovedstaden, Denmark
+</td>
+<td style="text-align:left;">
+Vesterbro
+</td>
+<td style="text-align:left;">
+Vesterbro-Kongens Enghave
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Hovedstaden
+</td>
+<td style="text-align:right;">
+1650
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Copenhagen, Denmark
+</td>
+<td style="text-align:left;">
+DK
+</td>
+<td style="text-align:left;">
+Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+We are Simon and Anna, 40ies, professionals, have a toddler who makes life even more beautiful, love plants, music, want to try to be bee farmers, want to keep on fishing, travel to new places, meet new people and keep good friends.
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/127577/profile_pic/1354054705/original.jpg?aki_policy=profile_small" class="uri">https://a0.muscache.com/im/users/127577/profile_pic/1354054705/original.jpg?aki_policy=profile_small</a>
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/127577/profile_pic/1354054705/original.jpg?aki_policy=profile_x_medium" class="uri">https://a0.muscache.com/im/users/127577/profile_pic/1354054705/original.jpg?aki_policy=profile_x_medium</a>
+</td>
+<td style="text-align:left;">
+Østerbro
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+[‘email’, ‘phone’, ‘facebook’, ‘reviews’, ‘jumio’, ‘government_id’]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+Copenhagen, Hovedstaden, Denmark
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+sterbro
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Hovedstaden
+</td>
+<td style="text-align:right;">
+2100
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Copenhagen, Denmark
+</td>
+<td style="text-align:left;">
+DK
+</td>
+<td style="text-align:left;">
+Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<p>Hi and welcome. My name is Ebbe, I am a medical doctor working in Copenhagen. I live in the flat with my girlfriend Lea who is working as a nurse.</p>
+We love sports, music and travelling, and we look forward welcoming you to CPH
+</td>
+<td style="text-align:left;">
+within an hour
+</td>
+<td style="text-align:left;">
+100%
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/129976/profile_pic/1371667869/original.jpg?aki_policy=profile_small" class="uri">https://a0.muscache.com/im/users/129976/profile_pic/1371667869/original.jpg?aki_policy=profile_small</a>
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/129976/profile_pic/1371667869/original.jpg?aki_policy=profile_x_medium" class="uri">https://a0.muscache.com/im/users/129976/profile_pic/1371667869/original.jpg?aki_policy=profile_x_medium</a>
+</td>
+<td style="text-align:left;">
+Vesterbro
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+[‘email’, ‘phone’, ‘facebook’, ‘reviews’, ‘jumio’, ‘offline_government_id’, ‘government_id’]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+Copenhagen, Capital Region of Denmark, Denmark
+</td>
+<td style="text-align:left;">
+Vesterbro
+</td>
+<td style="text-align:left;">
+Vesterbro-Kongens Enghave
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Capital Region of Denmark
+</td>
+<td style="text-align:right;">
+1719
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Copenhagen, Denmark
+</td>
+<td style="text-align:left;">
+DK
+</td>
+<td style="text-align:left;">
+Denmark
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+As profession - Set and Costumedesigner for Avangarde Theatre, Modern Dance and Performance. A traveler, enjoy to se the whole world, meet people and talk about the world situation
+</td>
+<td style="text-align:left;">
+within an hour
+</td>
+<td style="text-align:left;">
+100%
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/140105/profile_pic/1289485314/original.jpg?aki_policy=profile_small" class="uri">https://a0.muscache.com/im/users/140105/profile_pic/1289485314/original.jpg?aki_policy=profile_small</a>
+</td>
+<td style="text-align:left;">
+<a href="https://a0.muscache.com/im/users/140105/profile_pic/1289485314/original.jpg?aki_policy=profile_x_medium" class="uri">https://a0.muscache.com/im/users/140105/profile_pic/1289485314/original.jpg?aki_policy=profile_x_medium</a>
+</td>
+<td style="text-align:left;">
+Vesterbro
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+[‘email’, ‘phone’, ‘reviews’, ‘jumio’, ‘offline_government_id’, ‘selfie’, ‘government_id’, ‘identity_manual’]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+Copenhagen, Hovedstaden, Denmark
+</td>
+<td style="text-align:left;">
+Vesterbro
+</td>
+<td style="text-align:left;">
+Vesterbro-Kongens Enghave
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Hovedstaden
+</td>
+<td style="text-align:right;">
+1620
+</td>
+<td style="text-align:left;">
+Copenhagen
+</td>
+<td style="text-align:left;">
+Copenhagen, Denmark
+</td>
+<td style="text-align:left;">
+DK
+</td>
+<td style="text-align:left;">
+Denmark
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>From columns 25 to 48 we will keep the following:</p>
+<ul>
+<li><strong>host_is_superhost</strong>: categorical t or f - describing highly trustworthy hosts (“Superhosts are experienced hosts who provide a shining example for other hosts, and extraordinary experiences for their guests.” <a href="https://www.airbnb.com/help/article/828/what-is-a-superhost?locale=en" class="uri">https://www.airbnb.com/help/article/828/what-is-a-superhost?locale=en</a>) they have hosted at least 10 trips; maintained 90% response rate or higher; received a 5-star review at least 80% of the time they have been reviewed; completed each of their confirmed reservations without canceling (<span class="citation">Wang and Nicolau (2017)</span>)</li>
+<li><strong>host_has_profile_pic</strong>: categorical t or f - can increase credibility.</li>
+<li><strong>host_identity_verified</strong>: categorical t or f - can also increase credibility.</li>
+<li><strong>neighborhood</strong>: The corresponding neighborhood, however, it should be taken with caution.</li>
+<li><strong>neighbourhood_cleansed</strong>: for grouping neighborhoods in map visualization</li>
+</ul>
+<p>And drop all columns below:</p>
+<ul>
+<li>host_about</li>
+<li>host_response_rate - many NA’s</li>
+<li>host_response_time (4642 NA)</li>
+<li>host_acceptance_rate - either NA or blank</li>
+<li>host_thumbnail_url - host picture</li>
+<li>host_picture_url - host picture</li>
+<li>host_neighbourhood</li>
+<li>host_listings_count</li>
+<li>host_total_listings_count</li>
+<li>host_verifications - list of host verification methods</li>
+<li>street</li>
+<li>city</li>
+<li>state</li>
+<li>zipcode</li>
+<li>market</li>
+<li>smart_location</li>
+<li>country_code</li>
+<li>country</li>
+<li>neighbourhood_group_cleansed</li>
+<li>host_listings_count: Using the calculated one below.</li>
+</ul>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:910px; ">
+<table class="table table-striped table-hover table-condensed table-responsive" style="font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+latitude
+</th>
+<th style="text-align:right;">
+longitude
+</th>
+<th style="text-align:left;">
+is_location_exact
+</th>
+<th style="text-align:left;">
+property_type
+</th>
+<th style="text-align:left;">
+room_type
+</th>
+<th style="text-align:right;">
+accommodates
+</th>
+<th style="text-align:right;">
+bathrooms
+</th>
+<th style="text-align:right;">
+bedrooms
+</th>
+<th style="text-align:right;">
+beds
+</th>
+<th style="text-align:left;">
+bed_type
+</th>
+<th style="text-align:left;">
+amenities
+</th>
+<th style="text-align:right;">
+square_feet
+</th>
+<th style="text-align:left;">
+price
+</th>
+<th style="text-align:left;">
+weekly_price
+</th>
+<th style="text-align:left;">
+monthly_price
+</th>
+<th style="text-align:left;">
+security_deposit
+</th>
+<th style="text-align:left;">
+cleaning_fee
+</th>
+<th style="text-align:right;">
+guests_included
+</th>
+<th style="text-align:left;">
+extra_people
+</th>
+<th style="text-align:right;">
+minimum_nights
+</th>
+<th style="text-align:right;">
+maximum_nights
+</th>
+<th style="text-align:left;">
+calendar_updated
+</th>
+<th style="text-align:left;">
+has_availability
+</th>
+<th style="text-align:right;">
+availability_30
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+55.68798
+</td>
+<td style="text-align:right;">
+12.54571
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+Apartment
+</td>
+<td style="text-align:left;">
+Private room
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Real Bed
+</td>
+<td style="text-align:left;">
+{TV,“Cable TV”,Wifi,Kitchen,“Paid parking off premises”,Heating,Washer,“Smoke detector”,Essentials,Hangers,“Hair dryer”,Iron,“Laptop friendly workspace”,“translation missing: en.hosting_amenity_49”,“translation missing: en.hosting_amenity_50”,“Room-darkening shades”,“Hot water”,“Bed linens”,Microwave,“Coffee maker”,Refrigerator,Dishwasher,“Dishes and silverware”,“Cooking basics”,Oven,Stove,“Garden or backyard”,“Luggage dropoff allowed”,“Paid parking on premises”}
+</td>
+<td style="text-align:right;">
+97
+</td>
+<td style="text-align:left;">
+$356.00
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+$0.00
+</td>
+<td style="text-align:left;">
+$32.00
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+$65.00
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+4 days ago
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55.69163
+</td>
+<td style="text-align:right;">
+12.57459
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+House
+</td>
+<td style="text-align:left;">
+Entire home/apt
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1.5
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Real Bed
+</td>
+<td style="text-align:left;">
+{TV,Wifi,Kitchen,“Indoor fireplace”,Heating,“Family/kid friendly”,Washer,Dryer,“Smoke detector”,“Fire extinguisher”,Essentials,Shampoo,Hangers,“Hair dryer”,Iron,“Laptop friendly workspace”,Bathtub,“High chair”,Crib,“Hot water”,“Bed linens”,“Patio or balcony”,“Garden or backyard”,“Long term stays allowed”}
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+$2,101.00
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+$5,000.00
+</td>
+<td style="text-align:left;">
+$1,100.00
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+$350.00
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:left;">
+2 weeks ago
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+24
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55.67590
+</td>
+<td style="text-align:right;">
+12.57698
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+House
+</td>
+<td style="text-align:left;">
+Entire home/apt
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+2.5
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Real Bed
+</td>
+<td style="text-align:left;">
+{TV,Internet,Wifi,Kitchen,“Buzzer/wireless intercom”,Heating,“Family/kid friendly”,Hangers,“Hair dryer”,Iron,“Self check-in”,Lockbox}
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+$3,097.00
+</td>
+<td style="text-align:left;">
+$17,532.00
+</td>
+<td style="text-align:left;">
+$67,146.00
+</td>
+<td style="text-align:left;">
+$3,730.00
+</td>
+<td style="text-align:left;">
+$522.00
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+$0.00
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:left;">
+yesterday
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55.67069
+</td>
+<td style="text-align:right;">
+12.55430
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+Apartment
+</td>
+<td style="text-align:left;">
+Entire home/apt
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Real Bed
+</td>
+<td style="text-align:left;">
+{Wifi,Kitchen,“Paid parking off premises”,Heating,“Family/kid friendly”,Washer,Essentials,Hangers,“Hair dryer”,Iron,“Laptop friendly workspace”,“Baby bath”,“Changing table”,“High chair”,“Children’s books and toys”,Crib,“Pack ’n Play/travel crib”,“Room-darkening shades”,“Children’s dinnerware”,“Hot water”,Microwave,Refrigerator,Dishwasher,“Dishes and silverware”,“Cooking basics”,Oven,Stove,“Patio or balcony”,“Host greets you”}
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+$802.00
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+$300.00
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+$0.00
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:left;">
+5 months ago
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55.69375
+</td>
+<td style="text-align:right;">
+12.56945
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+Apartment
+</td>
+<td style="text-align:left;">
+Entire home/apt
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Real Bed
+</td>
+<td style="text-align:left;">
+{TV,Internet,Wifi,Kitchen,“Buzzer/wireless intercom”,Heating,Washer,Dryer,“Smoke detector”,“Fire extinguisher”,Essentials,Iron,“Laptop friendly workspace”,“Baby bath”,“Changing table”,“High chair”,“Children’s books and toys”,“Window guards”,“Table corner guards”,“Room-darkening shades”,“Children’s dinnerware”,“Hot water”,Refrigerator,Dishwasher,“Dishes and silverware”,“Cooking basics”,Oven,Stove,“Long term stays allowed”,Other,“Paid parking on premises”}
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+$860.00
+</td>
+<td style="text-align:left;">
+$2,984.00
+</td>
+<td style="text-align:left;">
+$8,953.00
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+$75.00
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+$0.00
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:left;">
+today
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55.66744
+</td>
+<td style="text-align:right;">
+12.55516
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+Apartment
+</td>
+<td style="text-align:left;">
+Entire home/apt
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Real Bed
+</td>
+<td style="text-align:left;">
+{TV,“Cable TV”,Internet,Wifi,Kitchen,“Buzzer/wireless intercom”,Heating,“Family/kid friendly”}
+</td>
+<td style="text-align:right;">
+689
+</td>
+<td style="text-align:left;">
+$750.00
+</td>
+<td style="text-align:left;">
+$4,700.00
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+$1,000.00
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+$100.00
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+a week ago
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55.67368
+</td>
+<td style="text-align:right;">
+12.55248
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+Apartment
+</td>
+<td style="text-align:left;">
+Entire home/apt
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+Real Bed
+</td>
+<td style="text-align:left;">
+{TV,“Cable TV”,Internet,Wifi,Kitchen,“Free parking on premises”,“Hot tub”,“Buzzer/wireless intercom”,Heating,“Family/kid friendly”,Washer,Dryer,“Smoke detector”,“Carbon monoxide detector”,“First aid kit”,Essentials,Shampoo,Hangers,“Hair dryer”,Iron,“Laptop friendly workspace”,Bathtub,“High chair”,“Children’s books and toys”,Crib,“Room-darkening shades”,“Hot water”,“Bed linens”,“Luggage dropoff allowed”,“Host greets you”}
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+$1,080.00
+</td>
+<td style="text-align:left;">
+$7,461.00
+</td>
+<td style="text-align:left;">
+$26,112.00
+</td>
+<td style="text-align:left;">
+$1,492.00
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+$298.00
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+365
+</td>
+<td style="text-align:left;">
+2 weeks ago
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>From the next 24 variables, we will keep the following:</p>
+<ul>
+<li><strong>latitude</strong>: Coordinates for map visualizations.</li>
+<li><strong>longitude</strong>: Coordinates for map visualizations.</li>
+<li><strong>property_type</strong>: Contains type of property (Villa, Boat, Apartment etc.)</li>
+<li><strong>room_type</strong>: One of the three room types (see next section).</li>
+<li><strong>accommodates</strong>: The number of people that the listing can accommodate.<br />
+</li>
+<li><strong>bathrooms</strong>: The number of bathrooms.</li>
+<li><strong>bedrooms</strong>: The number of bedrooms.</li>
+<li><strong>beds</strong>: The number of beds.</li>
+<li><strong>price</strong>: price per night (the $ sign could make the impression that the prices are in fact displayed in $. However, these prices are in Danish Krones (DKK))</li>
+<li><strong>security_deposit</strong>: A cost determinant.</li>
+<li><strong>cleaning_fee</strong>: Also a cost factor.</li>
+<li><strong>guests_included</strong>: This can be used to calculate the cost per person per night.</li>
+<li><strong>extra_people</strong>: The cost of additional persons per night.</li>
+<li><strong>minimum_nights</strong>: Also a cost factor and it can hint at subleasing if there is a high number of minimum nights.</li>
+</ul>
+<p>We drop the following:</p>
+<ul>
+<li>is_location_exact</li>
+<li>bed_type</li>
+<li>amenities</li>
+<li>square_feet</li>
+<li>weekly_price</li>
+<li>monthly_price</li>
+<li>maximum_nights</li>
+<li>calendar_updated</li>
+<li>has_availability</li>
+<li>availability_30</li>
+</ul>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:910px; ">
+<table class="table table-striped table-hover table-condensed table-responsive" style="font-size: 10px; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+availability_60
+</th>
+<th style="text-align:right;">
+availability_90
+</th>
+<th style="text-align:right;">
+availability_365
+</th>
+<th style="text-align:left;">
+calendar_last_scraped
+</th>
+<th style="text-align:right;">
+number_of_reviews
+</th>
+<th style="text-align:left;">
+first_review
+</th>
+<th style="text-align:left;">
+last_review
+</th>
+<th style="text-align:right;">
+review_scores_rating
+</th>
+<th style="text-align:right;">
+review_scores_accuracy
+</th>
+<th style="text-align:right;">
+review_scores_cleanliness
+</th>
+<th style="text-align:right;">
+review_scores_checkin
+</th>
+<th style="text-align:right;">
+review_scores_communication
+</th>
+<th style="text-align:right;">
+review_scores_location
+</th>
+<th style="text-align:right;">
+review_scores_value
+</th>
+<th style="text-align:left;">
+requires_license
+</th>
+<th style="text-align:left;">
+license
+</th>
+<th style="text-align:left;">
+jurisdiction_names
+</th>
+<th style="text-align:left;">
+instant_bookable
+</th>
+<th style="text-align:left;">
+is_business_travel_ready
+</th>
+<th style="text-align:left;">
+cancellation_policy
+</th>
+<th style="text-align:left;">
+require_guest_profile_picture
+</th>
+<th style="text-align:left;">
+require_guest_phone_verification
+</th>
+<th style="text-align:right;">
+calculated_host_listings_count
+</th>
+<th style="text-align:right;">
+reviews_per_month
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:left;">
+2009-09-04
+</td>
+<td style="text-align:left;">
+2018-10-13
+</td>
+<td style="text-align:right;">
+96
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+moderate
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.31
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+342
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:left;">
+2013-12-02
+</td>
+<td style="text-align:left;">
+2018-10-04
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+moderate
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.72
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+115
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:right;">
+230
+</td>
+<td style="text-align:left;">
+2010-10-14
+</td>
+<td style="text-align:left;">
+2018-10-10
+</td>
+<td style="text-align:right;">
+90
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+moderate
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2.36
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+290
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:left;">
+2010-06-17
+</td>
+<td style="text-align:left;">
+2018-07-02
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+strict_14_with_grace_period
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.20
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:right;">
+87
+</td>
+<td style="text-align:left;">
+2010-07-30
+</td>
+<td style="text-align:left;">
+2014-08-19
+</td>
+<td style="text-align:right;">
+94
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+moderate
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.87
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:left;">
+2010-08-16
+</td>
+<td style="text-align:left;">
+2017-08-25
+</td>
+<td style="text-align:right;">
+97
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+strict_14_with_grace_period
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.17
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:left;">
+2018-10-18
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:left;">
+2010-08-23
+</td>
+<td style="text-align:left;">
+2018-09-06
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+moderate
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.70
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>From the last 24 columns we will keep the following:</p>
+<ul>
+<li><strong>number_of_reviews</strong>:</li>
+<li><strong>first_review</strong>: To calculate reviews_per_month</li>
+<li><strong>last_review</strong>: To select the non-active listings and drop them from the analysis.</li>
+<li><strong>review_scores_rating</strong>:</li>
+<li><strong>review_scores_cleanliness</strong> - discrete value - numbers between 2 and 10</li>
+<li><strong>review_scores_checkin</strong> - discrete value - numbers between 2 and 10</li>
+<li><strong>review_scores_communication</strong> - discrete value - numbers between 2 and 10</li>
+<li><strong>review_scores_location</strong> - discrete value - numbers between 2 and 10</li>
+<li><strong>review_scores_value</strong> - discrete value - numbers between 2 and 10</li>
+<li><strong>instant_bookable</strong> - categorical value - t or false</li>
+<li><strong>cancellation_policy</strong> - ordinal value with 5 categories that can be ordered from lowest to highest level of flexibility (moderate to strict)</li>
+<li><strong>calculated_host_listings_count</strong>: number of host listings.</li>
+<li><strong>reviews_per_month</strong></li>
+</ul>
+<p>And drop the following:</p>
+<ul>
+<li>availability_60</li>
+<li>availability_90</li>
+<li>availability_365</li>
+<li>calendar_last_scraped</li>
+<li>requires_license</li>
+<li>license</li>
+<li>jurisdiction_names</li>
+<li>is_business_travel_ready</li>
+<li>require_guest_profile_picture</li>
+<li>require_guest_phone_verification</li>
+</ul>
+<p>Finally, we can build a new data frame which consists of all variables of interest ( in total 37):</p>
+<pre class="r"><code>dim(airbnb_data)</code></pre>
+<pre><code>## [1] 25946    37</code></pre>
+<pre class="r"><code>glimpse(airbnb_data[7:15])</code></pre>
+<pre><code>## Observations: 25,946
+## Variables: 9
+## $ host_identity_verified &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, TRUE, FALSE,...
+## $ neighbourhood          &lt;chr&gt; &quot;Nørrebro&quot;, &quot;Indre By&quot;, &quot;Indre By&quot;, &quot;Ve...
+## $ neighbourhood_cleansed &lt;chr&gt; &quot;Nrrebro&quot;, &quot;Indre By&quot;, &quot;Indre By&quot;, &quot;Ves...
+## $ latitude               &lt;dbl&gt; 55.68798, 55.69163, 55.67590, 55.67069,...
+## $ longitude              &lt;dbl&gt; 12.54571, 12.57459, 12.57698, 12.55430,...
+## $ property_type          &lt;chr&gt; &quot;Apartment&quot;, &quot;House&quot;, &quot;House&quot;, &quot;Apartme...
+## $ room_type              &lt;chr&gt; &quot;Private room&quot;, &quot;Entire home/apt&quot;, &quot;Ent...
+## $ accommodates           &lt;dbl&gt; 2, 6, 12, 2, 4, 3, 6, 4, 4, 3, 2, 3, 2,...
+## $ bathrooms              &lt;dbl&gt; 1.0, 1.5, 2.5, 1.0, 1.0, 1.0, 2.0, 1.0,...</code></pre>
+</div>
+<div id="data-cleaning" class="section level2">
+<h2>Data Cleaning</h2>
+<p>Now we need to perform some steps that are crucial in order to have reliable results in the end. First, we need to make some reasonable assumption. It does not make sense to analyze listings which did not receive any reviews yet and are not verified.</p>
+<pre class="r"><code># First cleaning including minimum numbers of review and verified host profile
+
+airbnb_clean &lt;-  airbnb_data %&gt;% 
+  filter(host_identity_verified == &quot;TRUE&quot; &amp; number_of_reviews &gt; 0)
+dim(airbnb_clean)</code></pre>
+<pre><code>## [1] 9772   37</code></pre>
+<p>You can see how drastically our number of observations is reduced from 26.000 to almost 9.000.</p>
+<p>Next, we will clean all variables that contain prices and convert them to the right format. The variable “extra_people” also consists of $ signs and is therefore recorded as well. Again, we will make the assumptions that we only consider listings which price is above 0 and below 17.500 Dkk.</p>
+<pre class="r"><code>airbnb_clean &lt;- airbnb_clean %&gt;% 
+  mutate(cleaning_fee_dkk = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, airbnb_clean$cleaning_fee))) %&gt;% 
+  mutate(price_dkk = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, airbnb_clean$price))) %&gt;% 
+  mutate(extra_people_dkk = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, airbnb_clean$extra_people))) %&gt;% 
+  mutate(security_deposit_dkk = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, airbnb_clean$security_deposit))) %&gt;% 
+  filter(price_dkk &gt; 0 &amp; price_dkk &lt; 17500)
+dim(airbnb_clean)</code></pre>
+<pre><code>## [1] 9769   41</code></pre>
+<p>Thirdly, we clean the following variables:</p>
+<pre class="r"><code>airbnb_clean &lt;- airbnb_clean %&gt;% mutate(
+  superhost = case_when(
+    host_is_superhost == &quot;TRUE&quot; ~ 1,
+    host_is_superhost == &quot;FALSE&quot; ~ 0
+  ),
+  instant = case_when(
+    instant_bookable == &quot;TRUE&quot; ~ 1,
+    instant_bookable == &quot;FALSE&quot; ~ 0
+  )
+)
+
+
+# Clean the names
+airbnb_clean &lt;- airbnb_clean %&gt;% 
+  mutate(Neighbourhood=case_when(
+    str_detect(neighbourhood_cleansed, &quot;Amager st&quot;) ~ &quot;Amager Strand&quot;,
+    str_detect(neighbourhood_cleansed, &quot;Amager Vest&quot;) ~ &quot;Amager Vest&quot;,
+    str_detect(neighbourhood_cleansed, &quot;Vanlse&quot;) ~ &quot;Vanløse&quot;,
+    str_detect(neighbourhood_cleansed, &quot;Nrrebro&quot;) ~ &quot;Nørrebro&quot;,
+    str_detect(neighbourhood_cleansed, &quot;Brnshj-Husum&quot;) ~ &quot;Brønshøj&quot;,
+    str_detect(neighbourhood_cleansed, &quot;sterbro&quot;) ~ &quot;Østerbro&quot;,
+    str_detect(neighbourhood_cleansed, &quot;Vesterbro-Kongens Enghave&quot;) ~ &quot;Vesterbro&quot;,
+    TRUE ~ neighbourhood_cleansed
+  )) </code></pre>
+<p>For the type of property, we only want types that are mentioned more than 20 times.</p>
+<pre class="r"><code>airbnb_clean$property_type  &lt;- airbnb_clean$property_type %&gt;%  
+  str_replace(., &quot; \\&amp; &quot;, &quot;_&quot;) %&gt;% 
+  str_replace(., &quot;\\/&quot;, &quot;_&quot;) %&gt;% 
+  as_factor() 
+
+
+sort(table(airbnb_clean$property_type), decreasing = T)</code></pre>
+<pre><code>## 
+##          Apartment        Condominium              House 
+##               8237                662                428 
+##          Townhouse               Loft              Villa 
+##                178                138                 30 
+##  Bed and breakfast          Houseboat           Bungalow 
+##                 11                 11                 10 
+##               Boat              Other        Guest suite 
+##                  9                  9                  9 
+##              Cabin             Hostel         Guesthouse 
+##                  8                  6                  6 
+## Serviced apartment               Tent          Camper_RV 
+##                  5                  4                  3 
+##          Farm stay          Treehouse            Cottage 
+##                  1                  1                  1 
+##             Island         Tiny house 
+##                  1                  1</code></pre>
+<p>Moreover, we want to look at listings duration, i.e. the number of days the listings exists. In addition, we create a new variable which shows us the price per person per night.</p>
+<pre class="r"><code>airbnb_clean &lt;- airbnb_clean %&gt;% mutate(
+  listing_duration = as.numeric(difftime(airbnb_clean$last_scraped, airbnb_clean$first_review, unit = &quot;days&quot;)),
+  price_person = price_dkk/accommodates)
+summary(airbnb_clean$listing_duration)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##     1.0   483.0   829.0   867.1  1176.0  3037.0       4</code></pre>
+<pre class="r"><code>summary(airbnb_clean$price_person)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   23.67  172.00  226.50  254.52  300.50 4999.33</code></pre>
+<p>Before we can start with the more interesting visualization part, we need to transform some variables into dummy variables for the regression analysis later on. Pleasenote that there are only 17 Shared Rooms in the data set which is why we will drop it from further analysis. Furthermore, we create an additive index with all “review” variables. You will see that the variables and therefore the index are heavily right-skewed.</p>
+<pre class="r"><code>airbnb_clean &lt;- airbnb_clean %&gt;% mutate(
+   rtype = case_when(
+    room_type == &quot;Shared room&quot; ~ NA_character_,
+    room_type == &quot;Entire home/apt&quot; ~ &quot;Entire Apartment&quot;,
+    room_type == &quot;Private room&quot; ~ &quot;Private&quot;
+    ),
+  home = case_when(
+    room_type == &quot;Shared room&quot; ~ NA_real_, # drop Shared Rooms
+    room_type == &quot;Entire home/apt&quot; ~ 1,
+    room_type == &quot;Private room&quot; ~ 0
+  ),
+strict_cancel = case_when(
+  cancellation_policy == &quot;strict_14_with_grace_period&quot; ~ 1,
+  cancellation_policy == &quot;moderate&quot; ~ 0,
+  cancellation_policy == &quot;flexible&quot; ~ 0
+),
+index = ((airbnb_clean$review_scores_accuracy + airbnb_clean$review_scores_cleanliness
+                        + airbnb_clean$review_scores_checkin +airbnb_clean$review_scores_communication
+                        + airbnb_clean$review_scores_location + airbnb_clean$review_scores_value)/6)
+) %&gt;% 
+  filter(!is.na(rtype))</code></pre>
+<p>Finally, in order to calculate the distance from the listings to the metro stations we need additional data:</p>
+<pre class="r"><code>library(rvest) 
+metroURL &lt;- &quot;https://en.wikipedia.org/wiki/List_of_Copenhagen_Metro_stations&quot;
+metro_scrap &lt;- metroURL %&gt;% 
+  read_html %&gt;%
+  html_nodes(xpath=&#39;//th&#39;) %&gt;% html_nodes(&quot;a&quot;) %&gt;% html_attr(&quot;href&quot;) %&gt;% na.omit() %&gt;% 
+  paste0(&quot;https://en.wikipedia.org&quot;, .) #create link, we only need first 22 lists
+
+# Using purrr instead of for-loops
+library(purrr)
+
+# Extract the geo locations and names of the metro stations
+names &lt;- map_df(metro_scrap[1:22], ~ tibble(names = read_html(.) %&gt;% html_nodes(&quot;#firstHeading&quot;) %&gt;% html_text())) %&gt;% distinct()
+geo &lt;- map_df(metro_scrap[1:22], ~ tibble(coor = read_html(.) %&gt;% html_nodes(&quot;.geo&quot;) %&gt;% html_text())) %&gt;% 
+  distinct()
+
+Numextract_coord &lt;- function(string){
+  as.data.frame(as.numeric(unlist(regmatches(string, gregexpr(&quot;[[:digit:]]+\\.*[[:digit:]]*&quot;, string)))))
+}
+
+df &lt;- Numextract_coord(geo$coor)
+lng &lt;- df %&gt;% dplyr::filter(row_number() %% 2 == 0) ## Select even rows
+lat &lt;- df %&gt;% dplyr::filter(row_number() %% 2 == 1) ## Select odd rows
+
+metro_df &lt;- cbind(names, lat,lng)
+colnames(metro_df) &lt;- c(&quot;metro&quot;,&quot;lat&quot;, &quot;long&quot;)
+metro_df[1:3,]</code></pre>
+<pre><code>##                   metro      lat     long
+## 1 Amager Strand Station 55.65611 12.63167
+## 2     Amagerbro Station 55.66336 12.60294
+## 3  Bella Center Station 55.63806 12.58294</code></pre>
+<p>Now we have the data in a format ready for visualizing and the regression In addition to that, we already showed how to get the coordinates of Copenhagen’s metro stations, which will be used in the calculation of the distance to the apartments in the regression section. The full code can be found in the source code.</p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-wang2017price">
+<p>Wang, Dan, and Juan L Nicolau. 2017. “Price Determinants of Sharing Economy Based Accommodation Rental: A Study of Listings from 33 Cities on Airbnb. Com.” <em>International Journal of Hospitality Management</em> 62. Elsevier: 120–31.</p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

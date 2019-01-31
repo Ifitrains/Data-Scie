@@ -1,0 +1,352 @@
+---
+title: "Visualisation"
+output: html_document
+---
+
+## Accomodations & Prices
+
+
+In general, there are three options to choose from when booking an Airbnb. The most demanded type of accommodation is a full apartment or house. This means that the owner is temporarily absent. The second and the third option include that the owner will remain in the property during the stay. The two possibilities distinguish between either a shared room or a separate, private room. It can be expected that the level of privacy an accommodation can offer will have an effect on the price of sharing economy based accommodation.  
+
+Let us have a first look at our data: We can see, from the first look, that **Shared Rooms** are not the most popular way of using Airbnb in Copenhagen. With only 17 listings, I will drop them from the further analysis.
+
+
+
+
+```{r pressure, echo=FALSE, warning=F, message=F}
+
+library(tidyverse)
+library(foreign)
+library(magrittr)
+library(car)
+library(ggplot2)
+library(stargazer)
+library(dplyr)
+#
+library(here)
+library(tidyverse)
+library(rvest)
+library(mapview)
+library(sf)
+library(raster)
+library(fasterize)
+library(RPostgreSQL)
+library(rpostgis)
+library(mapsapi)
+library(patchwork)
+library(ggmap)
+library(ggrepel)
+library(plotly)
+library(lubridate)
+library(hrbrthemes)
+library(kableExtra)
+library(viridis)
+library(plotly)
+library(bookdown) # citing
+library(RColorBrewer)
+library(extrafont)
+
+
+# Read in the data files
+
+airbnb <- read_csv(file = "data/listings.csv")
+
+# First cleaning including minimum numbers of review and verified host profile
+
+airbnb_clean <-  airbnb %>% 
+  filter(host_identity_verified == "TRUE" & number_of_reviews > 3) 
+
+
+# Second cleaning including replacing the dollar sign in front the prices
+
+airbnb_clean <- airbnb_clean %>% 
+  mutate(cleaning_fee_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$cleaning_fee))) %>% 
+  mutate(price_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$price))) %>% 
+  mutate(extra_people_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$extra_people))) %>% 
+  mutate(security_deposit_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$security_deposit))) %>% 
+  filter(price_dkk > 0)
+
+
+
+
+
+kable(table(airbnb_clean$room_type),
+      col.names = c("Accomodation",
+                    "Frequency")) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"),
+                full_width = F,
+                position = "float_right") 
+
+airbnb_clean <- airbnb_clean %>% mutate(
+   rtype = case_when(
+    room_type == "Shared room" ~ NA_character_,
+    room_type == "Entire home/apt" ~ "Entire Apartment",
+    room_type == "Private room" ~ "Private"
+    ),
+  home = case_when(
+    room_type == "Shared room" ~ NA_real_, # drop Shared Rooms
+    room_type == "Entire home/apt" ~ 1,
+    room_type == "Private room" ~ 0
+  ),
+strict_cancel = case_when(
+  cancellation_policy == "strict_14_with_grace_period" ~ 1,
+  cancellation_policy == "moderate" ~ 0,
+  cancellation_policy == "flexible" ~ 0
+),
+index = ((airbnb_clean$review_scores_accuracy + airbnb_clean$review_scores_cleanliness
+                        + airbnb_clean$review_scores_checkin +airbnb_clean$review_scores_communication
+                        + airbnb_clean$review_scores_location + airbnb_clean$review_scores_value)/6)
+) %>% 
+  filter(!is.na(rtype))
+    
+
+
+```
+ 
+Now we want to look at the night price distribution of Airbnb listings, one for the Airbnb apartments (you have the whole apartment for yourself) and one for AirBnB private rooms (you have your own room, but are sharing the apartment with the host). The data frame, as already shown in the descriptive analysis section, is short of observations on shared rooms which is why they are no further considered here.
+
+
+In addition, using the `plotly` package, I created an interactive bar plot of the number of listings sorted after the neighborhoods in Copenhagen. From the first look, we can see that Nørrebro, Vesterbro, Frederiksberg, and Østerbro hosts the most Airbnb listings. This is not completely surprising as these neighborhoods are very central and popular. 
+
+```{r ploty, echo=FALSE, warning=F, message=F}
+
+# # using plotly 
+f <- list(
+  family = "Viridis 20",
+  size = 18,
+  color = "#440154FF"
+)
+x <- list(
+  title = "Copenhagen Neigbourhoods",
+  titlefont = f
+)
+y <- list(
+  title = "Number of Listings",
+  titlefont = f
+)
+
+room_neigh <- airbnb_clean %>%
+  filter(!is.na(neighbourhood)) %>% 
+  group_by(neighbourhood) %>% 
+  dplyr::count(room_type) 
+
+room_neigh %>%
+  plot_ly(type = "bar",
+          x = ~neighbourhood,
+          y = ~n,
+          color = ~room_type,
+          colors = viridis_pal(option = "D")(3)) %>% 
+  layout(
+    title = "AirBnB listings sorted after type and neighbourhood",
+    xaxis = x, yaxis = y)
+  # only 17 shared room's listed in the data
+# Entire home = 6318
+# private room = 1199
+```
+
+We will now turn to the price distribution. The first graph shows the range of night price distribution of Airbnb apartments and the second histogram displays the same for private rooms. The trend that private rooms are cheaper than apartments is clearly evident in the graphs. 
+
+```{r histogram, echo=FALSE, warning=F, message=F}
+
+price_apart <- airbnb_clean %>%
+  filter( price_dkk<2100 & room_type == "Entire home/apt") %>%
+  ggplot( aes(x=price_dkk)) +
+  stat_bin(breaks=seq(0,2100,50), fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Night price distribution of Airbnb appartements") +
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = "gray90")+
+  theme(
+    plot.title = element_text(size=12))+
+  labs(x="Price in DKK (Danish krone)",
+       caption="")
+price_apart
+
+price_privat <- airbnb_clean %>%
+  filter( price_dkk<2100 & room_type == "Private room") %>%
+  ggplot( aes(x=price_dkk)) +
+  stat_bin(breaks=seq(0,2100,50), fill="#74add1", color="#e9ecef", alpha=0.9) +
+  ggtitle("Night price distribution of Airbnb private rooms") +
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = "gray90")+
+  theme(
+    plot.title = element_text(size=12)
+  )+
+  labs(x="Price in DKK (Danish krone)",
+       caption="1 Euro = 7.4 DKK ")
+price_privat
+
+
+
+density_plot <- ggplot(airbnb_clean, aes(x = log(airbnb_clean$price_dkk), color = rtype)) + geom_density(aes(fill = rtype, alpha = 0.5)) + 
+  labs(x = "Nightly Rental Price (Log)", y = "Density", 
+       title = "Price Density by Accommodation Type") + 
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = "gray90")+
+  theme(plot.title = element_text(size=12),
+        legend.title = element_blank())
+density_plot
+
+```
+
+
+## Distance
+
+One of the main questions raised in this work is the influence of distance to the metro stations on the price of the listings. 
+
+```{r distance, echo=FALSE, warning=F, message=F}
+
+library(AirBnBCopenhagen)
+library(rvest)
+library(geosphere)
+metroURL <- "https://en.wikipedia.org/wiki/List_of_Copenhagen_Metro_stations"
+metro_df <- geo_metro(metroURL)
+
+airbnb_clean$distance <- AirBnBCopenhagen::distance(airbnb_clean$longitude, airbnb_clean$latitude, metro_df$long, metro_df$lat)
+
+
+
+plot_distance <- ggplot(airbnb_clean, aes(x= distance, y= log(price_dkk)))+ 
+  geom_point()+
+  geom_smooth(method = "lm")+
+  labs(x = "Distance to the next Metro station (in meters)", 
+       y = "Nightly Rental Price (Log)", 
+       title = "Price vs. Distance to the next metro") + 
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = "gray90")+
+  theme(plot.title = element_text(size=12),
+        legend.title = element_blank())
+plot_distance
+
+# Distance to city center: nyhavn: 12.590659, 55.679687
+nyhavn_lng <- 12.590659
+nyhavn_lat <- 55.679687
+airbnb_clean$dist_centrum <- AirBnBCopenhagen::distance(airbnb_clean$longitude, airbnb_clean$latitude,
+         nyhavn_lng, nyhavn_lat)
+
+plot_distance_c <- ggplot(airbnb_clean, aes(x= dist_centrum, y= log(price_dkk)))+ 
+  geom_point()+
+  geom_smooth(method = "lm")+
+  labs(x = "Distance to Nyhavn, City Center", 
+       y = "Nightly Rental Price (Log)", 
+       title = "Price vs. Distance to the City Center") + 
+  theme_ipsum() +
+  theme_ipsum_rc(grid_col = "gray90")+
+  theme(plot.title = element_text(size=12),
+        legend.title = element_blank())
+plot_distance_c
+
+```
+
+It seems that, from the first glance, that the distance to the next metro has almost no effect. While the distance to the city center works, as we can see a lower price the more away the listing is located. My first thought was that perhaps people who stay in apartments that are in walking distance to the city center will not need the metro as a way of transportation. Thus, I made the same calculations and plots for apartments which are at least 2km away from Nyhavn. However, even if I extend this to apartments located at least 5km away from the city center, the picture still showed me no trend at all. At this point, I had to conclude that the distance to the next metro does not influence the price significantly. Nevertheless, I calculated the median price per night for two cases: In both cases, the apartment is at least located 3.5 km away from the city center. The first case reports the median price for a distance to the next metro below 250m and the other case above 250m.
+
+```{r distance2, echo=FALSE, warning=F, message=F}
+airbnb_clean %>% 
+    filter(distance < 250,
+           dist_centrum > 3500) %>% 
+    summarise(median = median(price_dkk))
+  
+  
+airbnb_clean %>% 
+    filter(distance > 250,
+           dist_centrum > 3500) %>% 
+    summarise(median = median(price_dkk))
+
+```
+I will return to this point later in the regression part. 
+
+
+
+
+## Mapping
+
+We can see on the map how the Airbnb listings are distributed over the whole city. Simultaneously, the blue-red dots represent the metro lines of Copenhagen. Both connect the east and western part with the city center which is located near Nørreport. One is going to the Airport (Lufthavn) and the other travels to Vestamager. The blue pop-up shows the location of Nyhavn, a touristic hot spot in the center of the city. Between 1845 and 1864 and from 1871 to 1875 the famous Danish fairytale writer Hans Christian Andersen lived in houses located at Nyhavn. 
+ 
+
+```{r, echo=F, warning=F, message=F}
+#load leaflet package for R
+library(leaflet)
+library(maps)
+library(rgdal)
+library(leaflet.extras)
+
+# metro data
+source("syntax/scraping_metros.R", encoding = "utf-8")
+# Create CPH Long Lat
+m <- leaflet() %>% setView(lng = 12.568337, lat = 55.676098, zoom = 12) # Copenhagens 
+# Nyhavn Popup
+nyhavn <- paste(sep = "<br/>",
+                paste0("<b>Name: </b>", "Nyhavn"),
+                paste0("<b>Place: </b>", "City Center, Copenhagen"),
+                paste0("<a href='https://en.wikipedia.org/wiki/Nyhavn",
+                       ... =   "'>Link</a>"))
+
+map_nyhavn <- m %>% 
+  addProviderTiles("Esri.WorldImagery", group="background 1") %>%
+  addTiles(options = providerTileOptions(noWrap = TRUE), group="background 2") %>%
+  addCircles(data = metro_df, lng = ~long, lat = ~lat,popup = ~metro,
+             fillColor="red", stroke = TRUE, fillOpacity = 0.8 , 
+             radius = 80,group="Metro Stations") %>% 
+  addCircleMarkers(data=airbnb_clean, lng = ~ longitude,
+                   lat = ~ latitude, radius=1 , color="black",
+                   fillColor="#ffa500", stroke = TRUE, fillOpacity = 2,
+                   group="AirBnB Listings",
+                   clusterOptions = markerClusterOptions()) %>%
+  addLayersControl(overlayGroups = c("Metro Stations","AirBnB Listings") , 
+                   baseGroups = c("background 1","background 2"),
+                   options = layersControlOptions(collapsed = FALSE))%>%
+  suspendScroll()
+
+
+map_nyhavn %>% addMarkers(lat =55.679687, lng = 12.590659, popup=nyhavn)
+```
+
+## Mapping the neighborhoods
+
+The Neighbourhoods GEOJSON file contains which will enable us to visualise them on a map. 
+
+```{r, echo=F, warning=F, message=F}
+library(AirBnBCopenhagen)
+airbnb_clean <- clean_names_nh(airbnb_clean)
+```
+
+```{r, echo=F,  warning=F, message=F}
+
+library(geojson)
+library(jsonlite)
+library(geojsonio)
+library(leaflet)
+nb_geo <- geojson_read("data/neighbourhoods.geojson", what = 'sp')
+
+borough_data <- airbnb_clean %>%
+  group_by(Neighbourhood) %>% 
+  nest() %>% 
+  mutate(center_lon=map_dbl(data, ~median(.$longitude)),
+         center_lat=map_dbl(data, ~median(.$latitude)),
+         number_listings=map_int(data, nrow))
+
+map_poly <- m %>% 
+  addProviderTiles("CartoDB.Positron", group="background 1") %>%
+  addTiles(options = providerTileOptions(noWrap = TRUE), group="background 2") %>%
+  addCircleMarkers(data=airbnb_clean, lng = ~ longitude, lat = ~ latitude, radius=1 , color="black",
+                   fillColor="#ffa500", stroke = TRUE, fillOpacity = 2, group="AirBnB Listings") %>%
+  addPolygons(data = nb_geo, color = "#444444", weight = 2, opacity = 1, group = "Polygon") %>% 
+  addLayersControl(overlayGroups = c("AirBnB Listings", "Polygon") , baseGroups = c("background 1","background 2"),
+                   options = layersControlOptions(collapsed = FALSE))%>%
+  addLabelOnlyMarkers(data = borough_data,
+                      lng = ~center_lon, lat = ~center_lat, label = ~Neighbourhood,
+                      labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE,
+                                                  opacity = 1,
+                                                  textsize='15px')) %>% 
+  suspendScroll()
+map_poly
+
+
+```
+
+
+
+
+
+
+
+

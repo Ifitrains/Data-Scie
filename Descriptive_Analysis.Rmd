@@ -1,0 +1,320 @@
+---
+title: "Descriptive Analysis"
+author: "Julian Kohlruss"
+date: "20 Januar 2019"
+output:
+bookdown::html_document2: default
+bibliography: bibfile.bib
+---
+
+
+## What is in the data set?
+
+```{r readin,  results="hide", message=FALSE, warning=FALSE}
+airbnb <- readr::read_csv("data/listings.csv")
+```
+```{r readindisplay, message=FALSE, warning=FALSE}
+dim(airbnb)
+```
+
+Airbnb Inside collects data from publicly available information from the Airbnb website. The data consists of 96 variables including all listings details as well as guest reviews. We will decide in four steps which variables will be used in our analysis. Using the `kableExtra` package, we can take a closer look at the first 24 columns:
+
+```{r, echo=F, warning=F, message=F}
+library(magrittr)
+library(kableExtra)
+library(AirBnBCopenhagen)
+
+kable_data(airbnb[1:7,1:24])
+```
+
+Out of the first 24 columns, we will keep the following variables:
+
+ * **id**: a listing identifier that can be used to extend the current data set with other files.
+ * **last_scraped**: In order to calculate listings durations. 
+ * **description**: a textual description of the listing and its surroundings. We will keep it for the LDA-Analysis later on.
+ * **host_id**: Each Airbnb host has a unique host_id value.
+ 
+Out of the first 24 columns we will delete the following variables:
+ 
+ * listing_url 
+ * scrape_id
+ * name - textual description of the listings
+ * summary - textual description of the listings
+ * space - textual description of the listings
+ * experiences_offered - contains only none value
+ * neighborhood_overview - textual description of the neighborhood
+ * notes 
+ * transit 
+ * access 
+ * interaction 
+ * house_rules 
+ * thumbnail_url - contains no values
+ * medium_url - contains no values
+ * picture_url - 
+ * xl_picture_url - contains no values
+ * host_url
+ * host_name
+ * host_since
+ * host_location
+ 
+```{r, echo=F, warning=F, message=F}
+kable_data(airbnb[1:7,25:48])
+```
+From columns 25 to 48 we will keep the following:
+
+ * **host_is_superhost**: categorical t or f - describing highly trustworthy hosts ("Superhosts are experienced hosts who provide a shining example for other hosts, and extraordinary experiences for their guests." <https://www.airbnb.com/help/article/828/what-is-a-superhost?locale=en>) they have hosted at least 10 trips; maintained 90% response rate or higher; received a 5-star review at least 80% of the time
+they have been reviewed; completed each of their confirmed reservations without canceling (@wang2017price)
+ * **host_has_profile_pic**: categorical t or f - can increase credibility.
+ * **host_identity_verified**: categorical t or f - can also increase credibility.
+ * **neighborhood**: The corresponding neighborhood, however, it should be taken with caution.
+ * **neighbourhood_cleansed**: for grouping neighborhoods in map visualization
+
+ 
+ And drop all columns below:
+ 
+ * host_about
+ * host_response_rate - many NA's
+ * host_response_time (4642 NA)
+ * host_acceptance_rate - either NA or blank
+ * host_thumbnail_url - host picture 
+ * host_picture_url - host picture 
+ * host_neighbourhood 
+ * host_listings_count 
+ * host_total_listings_count 
+ * host_verifications - list of host verification methods 
+ * street 
+ * city
+ * state
+ * zipcode
+ * market
+ * smart_location
+ * country_code
+ * country
+ * neighbourhood_group_cleansed
+ * host_listings_count: Using the calculated one below.
+ 
+```{r, echo=F, warning=F, message=F}
+kable_data(airbnb[1:7,49:72])
+```
+From the next 24 variables, we will keep the following:
+
+  * **latitude**: Coordinates for map visualizations.
+  * **longitude**: Coordinates for map visualizations.
+  * **property_type**: Contains type of property (Villa, Boat, Apartment etc.)
+  * **room_type**: One of the three room types (see next section).
+  * **accommodates**: The number of people that the listing can accommodate.  
+  * **bathrooms**: The number of bathrooms.
+  * **bedrooms**: The number of bedrooms.
+  * **beds**: The number of beds.
+  * **price**: price per night (the $ sign could make the impression that the prices are in fact displayed in $. However, these prices are in Danish Krones (DKK))
+  * **security_deposit**: A cost determinant.
+  * **cleaning_fee**: Also a cost factor. 
+  * **guests_included**: This can be used to calculate the cost per person per night. 
+  * **extra_people**: The cost of additional persons per night.
+  * **minimum_nights**: Also a cost factor and it can hint at subleasing if there is a high number of minimum nights.
+  
+We drop the following:
+
+ * is_location_exact
+ * bed_type
+ * amenities
+ * square_feet
+ * weekly_price
+ * monthly_price
+ * maximum_nights
+ * calendar_updated
+ * has_availability
+ * availability_30
+  
+```{r, echo=F, warning=F, message=F}
+kable_data(airbnb[1:7,73:96])
+```
+
+From the last 24 columns we will keep the following:
+
+ * **number_of_reviews**:
+ * **first_review**: To calculate reviews_per_month
+ * **last_review**: To select the non-active listings and drop them from the analysis.
+ * **review_scores_rating**: 
+ * **review_scores_cleanliness** - discrete value - numbers between 2 and 10
+ * **review_scores_checkin** - discrete value - numbers between 2 and 10
+ * **review_scores_communication** - discrete value - numbers between 2 and 10
+ * **review_scores_location** - discrete value - numbers between 2 and 10
+ * **review_scores_value** - discrete value - numbers between 2 and 10
+ * **instant_bookable** - categorical value - t or false
+ * **cancellation_policy** - ordinal value with 5 categories that can be ordered from lowest to highest level of flexibility (moderate to strict)
+ * **calculated_host_listings_count**: number of host listings. 
+ * **reviews_per_month**
+
+And drop the following:
+
+ * availability_60
+ * availability_90
+ * availability_365
+ * calendar_last_scraped
+ * requires_license
+ * license
+ * jurisdiction_names
+ * is_business_travel_ready
+ * require_guest_profile_picture
+ * require_guest_phone_verification
+ 
+ 
+Finally, we can build a new data frame which consists of all variables of interest ( in total 37):
+
+```{r, echo=F, warning=F, message=F}
+library(tidyverse)
+library(magrittr)
+library(dplyr)
+airbnb_data <- selection(airbnb)
+```
+```{r, echo=T, warning=F, message=F}
+dim(airbnb_data)
+glimpse(airbnb_data[7:15])
+```
+
+## Data Cleaning
+
+Now we need to perform some steps that are crucial in order to have reliable results in the end. First, we need to make some reasonable assumption. It does not make sense to analyze listings which did not receive any reviews yet and are not verified. 
+
+```{r, echo=T, warning=F, message=F}
+# First cleaning including minimum numbers of review and verified host profile
+
+airbnb_clean <-  airbnb_data %>% 
+  filter(host_identity_verified == "TRUE" & number_of_reviews > 0)
+dim(airbnb_clean)
+```
+You can see how drastically our number of observations is reduced from 26.000 to almost 9.000.
+
+Next, we will clean all variables that contain prices and convert them to the right format. The variable "extra_people" also consists of $ signs and is therefore recorded as well. Again, we will make the assumptions that we only consider listings which price is above 0 and below 17.500 Dkk. 
+
+```{r, echo=T, warning=F, message=F}
+airbnb_clean <- airbnb_clean %>% 
+  mutate(cleaning_fee_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$cleaning_fee))) %>% 
+  mutate(price_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$price))) %>% 
+  mutate(extra_people_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$extra_people))) %>% 
+  mutate(security_deposit_dkk = as.numeric(gsub("[\\$,]", "", airbnb_clean$security_deposit))) %>% 
+  filter(price_dkk > 0 & price_dkk < 17500)
+dim(airbnb_clean)
+```
+
+Thirdly, we clean the following variables:
+```{r, echo=T, warning=F, message=F}
+
+
+airbnb_clean <- airbnb_clean %>% mutate(
+  superhost = case_when(
+    host_is_superhost == "TRUE" ~ 1,
+    host_is_superhost == "FALSE" ~ 0
+  ),
+  instant = case_when(
+    instant_bookable == "TRUE" ~ 1,
+    instant_bookable == "FALSE" ~ 0
+  )
+)
+
+
+# Clean the names
+airbnb_clean <- airbnb_clean %>% 
+  mutate(Neighbourhood=case_when(
+    str_detect(neighbourhood_cleansed, "Amager st") ~ "Amager Strand",
+    str_detect(neighbourhood_cleansed, "Amager Vest") ~ "Amager Vest",
+    str_detect(neighbourhood_cleansed, "Vanlse") ~ "Vanløse",
+    str_detect(neighbourhood_cleansed, "Nrrebro") ~ "Nørrebro",
+    str_detect(neighbourhood_cleansed, "Brnshj-Husum") ~ "Brønshøj",
+    str_detect(neighbourhood_cleansed, "sterbro") ~ "Østerbro",
+    str_detect(neighbourhood_cleansed, "Vesterbro-Kongens Enghave") ~ "Vesterbro",
+    TRUE ~ neighbourhood_cleansed
+  )) 
+
+
+```
+
+For the type of property, we only want types that are mentioned more than 20 times.
+
+```{r, echo=T, warning=F, message=F}
+airbnb_clean$property_type  <- airbnb_clean$property_type %>%  
+  str_replace(., " \\& ", "_") %>% 
+  str_replace(., "\\/", "_") %>% 
+  as_factor() 
+
+
+sort(table(airbnb_clean$property_type), decreasing = T)
+```
+
+Moreover, we want to look at listings duration, i.e. the number of days the listings exists. In addition, we create a new variable which shows us the price per person per night. 
+
+```{r, echo=T, warning=F, message=F}
+
+airbnb_clean <- airbnb_clean %>% mutate(
+  listing_duration = as.numeric(difftime(airbnb_clean$last_scraped, airbnb_clean$first_review, unit = "days")),
+  price_person = price_dkk/accommodates)
+summary(airbnb_clean$listing_duration)
+summary(airbnb_clean$price_person)
+
+```
+
+Before we can start with the more interesting visualization part, we need to transform some variables into dummy variables for the regression analysis later on. Pleasenote that there are only 17 Shared Rooms in the data set which is why we will drop it from further analysis. Furthermore, we create an additive index with all "review" variables. You will see that the variables and therefore the index are heavily right-skewed.
+```{r, echo=T, warning=F, message=F}
+
+airbnb_clean <- airbnb_clean %>% mutate(
+   rtype = case_when(
+    room_type == "Shared room" ~ NA_character_,
+    room_type == "Entire home/apt" ~ "Entire Apartment",
+    room_type == "Private room" ~ "Private"
+    ),
+  home = case_when(
+    room_type == "Shared room" ~ NA_real_, # drop Shared Rooms
+    room_type == "Entire home/apt" ~ 1,
+    room_type == "Private room" ~ 0
+  ),
+strict_cancel = case_when(
+  cancellation_policy == "strict_14_with_grace_period" ~ 1,
+  cancellation_policy == "moderate" ~ 0,
+  cancellation_policy == "flexible" ~ 0
+),
+index = ((airbnb_clean$review_scores_accuracy + airbnb_clean$review_scores_cleanliness
+                        + airbnb_clean$review_scores_checkin +airbnb_clean$review_scores_communication
+                        + airbnb_clean$review_scores_location + airbnb_clean$review_scores_value)/6)
+) %>% 
+  filter(!is.na(rtype))
+    
+
+```
+
+Finally, in order to calculate the distance from the listings to the metro stations we need additional data:
+
+```{r, echo=T, warning=F, message=F}
+
+library(rvest) 
+metroURL <- "https://en.wikipedia.org/wiki/List_of_Copenhagen_Metro_stations"
+metro_scrap <- metroURL %>% 
+  read_html %>%
+  html_nodes(xpath='//th') %>% html_nodes("a") %>% html_attr("href") %>% na.omit() %>% 
+  paste0("https://en.wikipedia.org", .) #create link, we only need first 22 lists
+
+# Using purrr instead of for-loops
+library(purrr)
+
+# Extract the geo locations and names of the metro stations
+names <- map_df(metro_scrap[1:22], ~ tibble(names = read_html(.) %>% html_nodes("#firstHeading") %>% html_text())) %>% distinct()
+geo <- map_df(metro_scrap[1:22], ~ tibble(coor = read_html(.) %>% html_nodes(".geo") %>% html_text())) %>% 
+  distinct()
+
+Numextract_coord <- function(string){
+  as.data.frame(as.numeric(unlist(regmatches(string, gregexpr("[[:digit:]]+\\.*[[:digit:]]*", string)))))
+}
+
+df <- Numextract_coord(geo$coor)
+lng <- df %>% dplyr::filter(row_number() %% 2 == 0) ## Select even rows
+lat <- df %>% dplyr::filter(row_number() %% 2 == 1) ## Select odd rows
+
+metro_df <- cbind(names, lat,lng)
+colnames(metro_df) <- c("metro","lat", "long")
+metro_df[1:3,]
+```
+
+Now we have the data in a format ready for visualizing and the regression In addition to that, we already showed how to get the coordinates of Copenhagen's metro stations, which will be used in the calculation of the distance to the apartments in the regression section. The full code can be found in the source code. 
+
+## References
+

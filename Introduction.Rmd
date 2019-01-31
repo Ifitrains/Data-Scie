@@ -1,0 +1,55 @@
+---
+title: "Where to stay in hyggelig Copenhagen?"
+author: "Julian Kohlruss"
+date: "20 Januar 2019"
+html_document:
+    toc: true
+    toc_float: true
+bibliography: bibfile.bib
+---
+
+## Motivation
+
+
+I studied in Spring 2018 in this remarkable city with its high living quality and this encouraged me to conduct a "big data analysis" about it and answer some questions I developed during my stay there. 
+
+Many travelers, many friends, and family went to visit (me in) Copenhagen and a preferable way of staying was via an apartment found on Airbnb. My recommendation after six months living in Copenhagen is to find an apartment close to one of Copenhagen's metro stations. It connects the western part with the city center and the eastern part where the airport is located. Not only it is driverless, very modern and operates 24/7, but the easy access to the city is also remarkable. In less than 15 minutes you will get from the airport to the city center and compared to other European capitals this is quite unique. Thus, I always encouraged visitors to find an apartment close to one of the 22 metro stations which would transfer them very quickly to the city center and main sights. I would expect that the further afar the accommodation is located from the city center, the less expensive it will be. However, my central question I would like to answer in this analysis is the following:
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+<center>
+<strong>Which effect does the distance to the closest metro station have on the price of the accommodation?</strong>
+</div>
+<center>
+
+<center>
+
+![Metro](pictures/metro.jpg){ width=50% }
+</center>
+\  
+
+<p align="left"> This analysis will, therefore, focus on AirBnB listings in Copenhagen and their price determinants, i.e. specific attributes of the rental. Some of them are straightforward: number of beds, number of bathrooms etc. Other's like the apartment's distance to the Copenhagen Metro will be explained in more detail. For this, the cross-sectional data from Inside Airbnb is used. (<http://insideairbnb.com>) InsideAirbnb.com is a non-commercial source of data which is scraped from the publicly available information on Airbnb's website and is therefore independent of Airbnb. </p>
+
+## AirBnB
+
+In general, Airbnb is an online platform where regular people rent out their apartments, or parts of their apartments for the most part to tourists, but sometimes also to business travelers who are looking for a hotel substitute. Airbnb is a sharing economy based accommodation rental company which was founded by two university graduates in 2007. In the beginning, they rented out air mattresses on their apartment floor to offer conference participants a cheaper alternative to stay in San Francisco. (@guttentag2015airbnb)
+
+
+In 2019, "Airbnb's accommodation marketplace provides access to 5+ million unique places to stay in more than 81,000 cities and 191 countries." (@AirBnB2019) This remarkable growth disrupted the tourist industry worldwide, but on the other hand also disrupting the domestic/local housing market. The economic reasoning behind it is simple: Landlords will switch from long-term rentals for usual residents to short-term rentals in which the usual residents probably will not take part in. As a result of the focus on the short-term market and the inelasticity of the total supply of houses, prices in the long-run market will go up due to a fewer supply of rentals. Thus, there has been increased efforts from governments to set some rules in order to impose stricter regulations on landlords. In Copenhagen, for instance, the government of Denmark established some ground rules concerning taxes and limited the number of days a Copenhagen citizen can rent out her apartment or house in the short-term market. (@texcap, @barron2018sharing)
+
+However, the effect of the Sharing Economy on housing
+affordability lies beyond the scope of this analysis. We rather focus on a detailed description of the Copenhagen Airbnb market and scrutinize the effect of the distance to the closest metro station on the price of the accommodation. 
+
+
+## Structure
+
+The next pages show a detailed analysis of the data concerning the questions raised. Firstly, the data is cleaned in the descriptive analysis section and subsequently visualized. If you are not interested in the coding part behind, you can skip the descriptive analysis section and go directly to the figures and maps. 
+
+In a third step, we will prepare and execute a regression analysis. Finally, we look at the limitations that are inherent in the data and conclude with the main findings. 
+
+
+
+
+# References

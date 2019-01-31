@@ -1,0 +1,12 @@
+---
+title: "Copenhagen"
+output: html_document
+---
+
+Welcome to a scant and data driven analysis of the Copenhagen AirBnB market.
+(<https://www.airbnb.com/s/Copenhagen--Denmark>)
+
+```{r, echo=FALSE}
+# All defaults
+knitr::include_graphics("_site/pictures/nyhavn.jpg")
+```

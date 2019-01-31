@@ -1,0 +1,33 @@
+name: "AirBnB Copenhagen"
+output_dir: docs
+navbar:
+  title: "AirBnB Copenhagen"
+  type: inverse
+  theme: yeti
+  highlight: pygments
+  left:
+    - text: "Home"
+      icon: fa-home
+      href: index.html
+    - text: "Introduction"
+      icon: fa-map
+      href: Introduction.html
+    - text: "Descriptive Analysis"
+      icon: fa-broom
+      menu:
+      - text: "Tidy Data"
+        href: Descriptive_Analysis.html
+      - text: "Visualisation"
+        href: visualisation.html
+    - text: "Regression Analysis"
+      icon: fa-chart-line
+      href: Regression.html
+    - text: "The full code"
+      icon: fa-code
+      href: code.html
+    - text: "About Me"
+      icon: fa-user-graduate
+      href: about.html
+  right:
+    - icon: fa-envelope
+      href: mailto:j.kohlruss@zeppelin-university.net

@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Regression</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">AirBnB Copenhagen</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="Introduction.html">
+    <span class="fa fa-map"></span>
+     
+    Introduction
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-broom"></span>
+     
+    Descriptive Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Descriptive_Analysis.html">Tidy Data</a>
+    </li>
+    <li>
+      <a href="visualisation.html">Visualisation</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Regression.html">
+    <span class="fa fa-chart-line"></span>
+     
+    Regression Analysis
+  </a>
+</li>
+<li>
+  <a href="code.html">
+    <span class="fa fa-code"></span>
+     
+    The full code
+  </a>
+</li>
+<li>
+  <a href="about.html">
+    <span class="fa fa-user-graduate"></span>
+     
+    About Me
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="mailto:j.kohlruss@zeppelin-university.net">
+    <span class="fa fa-envelope"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Regression</h1>
+
+</div>
+
+
+<div id="hedonic-pricing-theory" class="section level2">
+<h2>Hedonic Pricing Theory</h2>
+<p>Very briefly, the theory underlying this regression analysis is the hedonic pricing theory which was pioneered by <span class="citation">Rosen (1974)</span>. It basically states that the price of a product (AirBnB listing) can be determined by certain characteristics of the product (number of bedrooms, location etc.) In other words, the accommodation’s attributes and characteristics influence the value of the product. Accordingly, the hosts can set the prices subject to the listings characteristics. Hedonic pricing theory applies multiple regression analysis to find out the correlation between price and characteristics. There are, however, not many studies who identify price determinants of sharing economy based accommodations. Nevertheless, there are many studies on hotel prices which can be used as a point of reference. Typical price determinants are location, property characteristics, quality signaling factors, hotel amenities and services and external factors like the number of close competitors. <span class="citation">(^See Wang and Nicolau 2017 for a comprehensive list of studies on hotel price determinants.)</span></p>
+</div>
+<div id="airbnb-pricing" class="section level2">
+<h2>Airbnb pricing</h2>
+<p>Airbnb has many unique listing characteristics, for instance, the possibility of instant booking or difference in the flexibility of cancellations. In addition to that, there are many factors which could influence the pricing decision of the host which cannot be explained by the data we have at our disposal. Airbnb host is very diverse and different that a regression analysis on the price will not cover every factor determining the pricing strategy of a host.</p>
+<p>Nevertheless, we divided the variables into four different sets: distance to the closest metro station, property characteristics, rental rules, and reputational (host) characteristics. Please note, due to its great amount of missing values the host’s response rate was excluded from the model, even though it might have a significant effect on the price.</p>
+<p>We use the price of the listings as our dependent variable in log form. The use of the log form means that we will interpret the effects of the independent variable to percentage changes in the listing prices. In addition, as <span class="citation">Sirmans, Macpherson, and Zietz (2005, 4)</span> have pointed out the fact that hedonic models in logarithmic forms are very beneficial: “]…] the hedonic pricing model is often estimated in semi-log form with the natural log of price used as the dependent variable. Then the coefficient estimates allow one to calculate the percentage change in price for a one-unit change in the given variable.”</p>
+<p>We are now able to formulate our hypothesis before we can begin with our regression analysis.</p>
+<p><em>Hypothesis 1:</em> The lesser the distance to the closest metro station, the higher the listing price.</p>
+<p><em>Hypothesis 2:</em> Instant Bookability and flexible cancellation rules are associated with higher listing prices.</p>
+<p><em>Hypothesis 3:</em> Higher average rating scores (index) are associated with higher listing prices.</p>
+<p><em>Hypothesis 4:</em> Superhost status is associated with higher prices</p>
+<p>Thus, out final regression equation looks like the following: <span class="math display">\[log(price_i) = \alpha + \delta D_i + \beta R_i + \gamma U_i + \tau P_i  + \epsilon_i \]</span> where <span class="math inline">\(price_i\)</span> reflects the individual price per night, <span class="math inline">\(\alpha\)</span> the intercept, the vector <span class="math inline">\(D\)</span> reflects the distance measures, the <span class="math inline">\(R\)</span> vector contains rental listing features and the vector <span class="math inline">\(U\)</span> is composed of rental rules and lastly <span class="math inline">\(P\)</span> describe reputational characteristics of the listing.</p>
+<div id="regression-diagnostic" class="section level3">
+<h3>Regression diagnostic</h3>
+<p>The data set consists of a rough location of the listings (based on latitude and longitude). This enables us to include a measure for “distance to city center”, in this case, Nyhavn, as a proxy of how well a certain apartment is located within a city.</p>
+<p>Moreover, we checked for multicollinearity among the independent variables to avoid any undesired effects on the regression results and thus our interpretation.</p>
+</div>
+</div>
+<div id="calculate-the-distance" class="section level2">
+<h2>Calculate the distance</h2>
+<pre class="r"><code>library(geosphere)
+
+metro_sp &lt;- metro_df[,c(&quot;lat&quot;, &quot;long&quot;)]
+
+# Distance measure to measure the distance between a station and an accommodation
+# This is what the haversine formula looks like (it calculates the great-circle distance between two points on a sphere using their longitudes and latitudes. It was in principal aimed at determine the position of a ship. @robusto1957cosine)
+hav.dist &lt;- function(long1, lat1, long2, lat2) {
+  R &lt;- 6371
+  diff.long &lt;- (long2 - long1)
+  diff.lat &lt;- (lat2 - lat1)
+  a &lt;- sin(diff.lat/2)^2 + cos(lat1) * cos(lat2) * sin(diff.long/2)^2
+  b &lt;- 2 * asin(pmin(1, sqrt(a))) 
+  d = R * b
+  return(d)
+}
+
+
+# # we get a matrix that contains in the first row the distances between the first accomodation 
+# and all metro stations:
+
+dist_metacc &lt;- geosphere::distm(cbind(airbnb_clean$longitude, airbnb_clean$latitude),
+                                cbind(metro_sp$lon, metro_sp$lat), 
+                                fun = distHaversine)
+summary(dist_metacc[,1]) # for the first metro</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##    89.36  4783.91  5756.16  5674.86  7011.88 12692.54</code></pre>
+<pre class="r"><code>head(dist_metacc[,1:3]) # Distances from the first six accomodations to the first three metros</code></pre>
+<pre><code>##          [,1]     [,2]     [,3]
+## [1,] 4079.600 2145.826 4228.463
+## [2,] 5727.915 3982.683 6256.679
+## [3,] 4978.247 3021.508 3912.291
+## [4,] 6294.354 4322.552 5105.278
+## [5,] 3314.377 1476.948 4080.976
+## [6,] 5324.121 3534.447 5771.846</code></pre>
+<pre class="r"><code># now get the index of the smallest value in each row (margin = 1)
+# in other words: for each of the accomodations, get the index of the metro station that is closest
+minidx &lt;- apply(dist_metacc, 1, which.min)
+print(minidx[1:5])</code></pre>
+<pre><code>## [1] 13 17  9 10  4</code></pre>
+<pre class="r"><code># add result to data
+
+library(matrixStats)
+airbnb_clean$distance &lt;- rowMins(as.matrix(dist_metacc))
+
+head(airbnb_clean$distance)</code></pre>
+<pre><code>## [1]  640.8608 1167.9521 1347.5282  656.8279  261.9853  684.2862</code></pre>
+<pre class="r"><code># Lets create a proxy &quot;central&quot; in order to control for that
+# lat =55.679687, lng = 12.590659 (Coordinates of Nyhaven)
+library(AirBnBCopenhagen)
+nyhavn_lng &lt;- 12.590659
+nyhavn_lat &lt;- 55.679687
+airbnb_clean$dist_centrum &lt;- AirBnBCopenhagen::distance(airbnb_clean$longitude,
+                                       airbnb_clean$latitude,
+                                nyhavn_lng, nyhavn_lat)</code></pre>
+<p>We calculated the distance between the location of a listed rental and the city center, calculated using “Harversine formula” with latitude and longitude in line with ….</p>
+</div>
+<div id="regression" class="section level2">
+<h2>Regression</h2>
+<p>The usage of the log on our dependent variable is justified when we look at the following graphs. Recall that basic linear regression requires some assumptions in order to be valid: linearity (&amp; no influential outliers), homoscedasticity of variance, independence of the error term, little or no multicollinearity and normally distributed residuals. When the data is not normally distributed a non-linear transformation (e.g., log-transformation) might fix this issue. One can clearly see that the regression in the standard, no log form, is indeed not normally distributed. Thus, it is reasonable to adjust accordingly and use the log-form henceforth.</p>
+<pre class="r"><code>mod_no_log &lt;- lm(price_dkk ~ distance + dist_centrum, data = airbnb_clean)
+plot_model(mod_no_log, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
+<p><img src="Regression_files/figure-html/regression%20diagnostic-1.png" width="672" /></p>
+<pre class="r"><code># Thus we take the log
+
+mod1 &lt;- lm(log(price_dkk) ~ distance + dist_centrum, data = airbnb_clean)
+plot_model(mod1, type = &quot;diag&quot;) %&gt;% plot_grid()</code></pre>
+<p><img src="Regression_files/figure-html/regression%20diagnostic-2.png" width="672" /></p>
+<p>Now we can finally take a look at our whole regression model. We included the variables step by step in order to see how the coefficients change.</p>
+<table style="text-align:center">
+<caption>
+<strong>Linear Regression Model</strong>
+</caption>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td colspan="5" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="4">
+Log Price per night in DKK
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+Model 1
+</td>
+<td>
+Model 2
+</td>
+<td>
+Model 3
+</td>
+<td>
+Model 4
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+4
+</td>
+</tr>
+<tr>
+<td colspan="5" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Distance Metro
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+<td>
+-0.000<sup>**</sup>
+</td>
+<td>
+-0.000
+</td>
+<td>
+-0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Distance Centre (Proxy)
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+<td>
+-0.000<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Apartment (Dummy)
+</td>
+<td>
+</td>
+<td>
+.438<sup>***</sup>
+</td>
+<td>
+.412<sup>***</sup>
+</td>
+<td>
+.415<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(.011)
+</td>
+<td>
+(.017)
+</td>
+<td>
+(.017)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Accomodates
+</td>
+<td>
+</td>
+<td>
+.128<sup>***</sup>
+</td>
+<td>
+.109<sup>***</sup>
+</td>
+<td>
+.110<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(.003)
+</td>
+<td>
+(.004)
+</td>
+<td>
+(.004)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Number of Bathrooms
+</td>
+<td>
+</td>
+<td>
+.247<sup>***</sup>
+</td>
+<td>
+.221<sup>***</sup>
+</td>
+<td>
+.214<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(.017)
+</td>
+<td>
+(.022)
+</td>
+<td>
+(.022)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Strict Cancel
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.014
+</td>
+<td>
+.011
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.011)
+</td>
+<td>
+(.011)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Instant Booking
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+-.003
+</td>
+<td>
+.011
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.013)
+</td>
+<td>
+(.013)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Minimum nights
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+-.001<sup>*</sup>
+</td>
+<td>
+-0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Cleaning Fee
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.000<sup>***</sup>
+</td>
+<td>
+0.000<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.000)
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Review Index
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.098<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.017)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Superhost
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+.030<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(.014)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Listings duration
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+0.000<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.000)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+6.881<sup>***</sup>
+</td>
+<td>
+5.840<sup>***</sup>
+</td>
+<td>
+5.834<sup>***</sup>
+</td>
+<td>
+4.832<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(.013)
+</td>
+<td>
+(.020)
+</td>
+<td>
+(.028)
+</td>
+<td>
+(.171)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+7,534
+</td>
+<td>
+7,515
+</td>
+<td>
+3,869
+</td>
+<td>
+3,869
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+.094
+</td>
+<td>
+.541
+</td>
+<td>
+.560
+</td>
+<td>
+.566
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+.093
+</td>
+<td>
+.540
+</td>
+<td>
+.559
+</td>
+<td>
+.564
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+.463 (df = 7531)
+</td>
+<td>
+.328 (df = 7509)
+</td>
+<td>
+.331 (df = 3859)
+</td>
+<td>
+.329 (df = 3856)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+389.268<sup>***</sup> (df = 2; 7531)
+</td>
+<td>
+1,768.163<sup>***</sup> (df = 5; 7509)
+</td>
+<td>
+545.359<sup>***</sup> (df = 9; 3859)
+</td>
+<td>
+418.535<sup>***</sup> (df = 12; 3856)
+</td>
+</tr>
+<tr>
+<td colspan="5" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Notes:</em>
+</td>
+<td colspan="4" style="text-align:left">
+<sup>*</sup>P &lt; .05
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="4" style="text-align:left">
+<sup>**</sup>P &lt; .01
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="4" style="text-align:left">
+<sup>***</sup>P &lt; .001
+</td>
+</tr>
+</table>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<ul>
+<li><p>The distance to the city center does have a significant, but very small effect on the price of the listing which is negative. The further away the listing is located, the less is its price. If we change <span class="math inline">\(x\)</span> by <span class="math inline">\(1\)</span> (unit), we’d expect our y variable to change by <span class="math inline">\(100⋅\beta_1\)</span> percent. In this case it means if the house is located 1 meter further away from Nyhavn, the city center, it decreases its price by 0.001%. If the listing is, for instance, 1km further away, ceteris paribus approximately on average it reduces its price by 1%.</p></li>
+<li><p>The distance to the closest metro does not have a significant effect.</p></li>
+<li><p>Property characteristics that are positively associated with the listings price are the type (Apartment), how many people it can accommodate and the number of bathrooms. All are highly signifacnt at the 0.1 percent level.</p></li>
+<li><p>The listings specific rental rules like instant bookable rentals or strict cancellation policies do not have the expected effect.</p></li>
+</ul>
+</div>
+<div id="limitations" class="section level2">
+<h2>Limitations</h2>
+<p>There are some limitations concerning the data used in the analysis. However beneficial the provision of data from AirbnbInside.com is, it is clear that there will be a difference between advertised listings and booked listings. The problem is that some of the advertised listings, which is the basis for the InsideAirbnb-dataset, are outdated or created by accident and are thus not booked. I tried to control for this by setting a minimum requirement concerning the number of reviews as well as the verification of the host as a necessary condition. “Scrapers that track updates to host calendars cannot distinguish real bookings from dates host block for other reasons.” <span class="citation">Coles et al. (2017)</span></p>
+<p><span class="citation">Coles et al. (2017)</span> also point to the fact that there is a discrepancy between the price listed and the actual transaction price. The scraping method does not include any corrections for specific discounts, i.e. weekly discount.</p>
+<p>In addition to that, in a next analysis, a researcher could investigate the influence factor of a specific neighborhood on the price of the listing. It can be expected that the more “in” a neighborhood is, the more it will cost for both the host (rent) and the guest (listing price).</p>
+</div>
+<div id="final-findings-summarized" class="section level2">
+<h2>Final Findings Summarized:</h2>
+<ul>
+<li><p>Higher prices are associated with the number of bathrooms, how many people the listing can accommodate and</p></li>
+<li>Cancellation policies are fairly spread out, but the analysis showed that the expected relationship cannot be detected in the data. It seems to have no effect on the price of the listing.</li>
+<li><p>Most top 5 words in description shows that more hosts talk about the surrounding area rather than the listing itself.</p></li>
+</ul>
+<p>the most expensive neighborhoods.</p>
+<p>Listings with prices around $200 - 300 get the most reviews, meaning that they are booked most often.</p>
+<p>Higher prices are associated with moderate and strict cancellation rules. However, the rental price is unaffected by the requirement that guests provide a profile photo or verify their telephone number.</p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-coles2017airbnb">
+<p>Coles, Peter A, Michael Egesdal, Ingrid Gould Ellen, Xiaodi Li, and Arun Sundararajan. 2017. “Airbnb Usage Across New York City Neighborhoods: Geographic Patterns and Regulatory Implications.” <em>Forthcoming, Cambridge Handbook on the Law of the Sharing Economy</em>.</p>
+</div>
+<div id="ref-rosen1974hedonic">
+<p>Rosen, Sherwin. 1974. “Hedonic Prices and Implicit Markets: Product Differentiation in Pure Competition.” <em>Journal of Political Economy</em> 82 (1). The University of Chicago Press: 34–55.</p>
+</div>
+<div id="ref-sirmans2005composition">
+<p>Sirmans, Stacy, David Macpherson, and Emily Zietz. 2005. “The Composition of Hedonic Pricing Models.” <em>Journal of Real Estate Literature</em> 13 (1). American Real Estate Society: 1–44.</p>
+</div>
+<div id="ref-wang2017price">
+<p>Wang, Dan, and Juan L Nicolau. 2017. “Price Determinants of Sharing Economy Based Accommodation Rental: A Study of Listings from 33 Cities on Airbnb. Com.” <em>International Journal of Hospitality Management</em> 62. Elsevier: 120–31.</p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
